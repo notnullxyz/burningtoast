@@ -1,5 +1,16 @@
 import SocketServer
 
+class ThreadingTCPServer(SocketServer.ThreadingTCPServer):
+	"""
+	Extending ThreadingTCPServer to gain the ability of taking arguments (by override of constructor). 
+	I couldn't think of anything else yet.
+	"""
+	def __init__(self, server_address, requestHandler, logger, auth):
+		SocketServer.ThreadingTCPServer.__init__(self, server_address, requestHandler)
+		self.logger = logger
+		self.auth = auth
+
+
 class TCPLogHandler(SocketServer.BaseRequestHandler):
 	""" 
 	Server Request handler.
@@ -7,12 +18,12 @@ class TCPLogHandler(SocketServer.BaseRequestHandler):
 	TODO: ThreadingMixIn later
 	"""
 
-	def __init__(self, logger, auth):
+	def __init__(self):
 		"""
 		constructor with dependency injection for the logger class
 		"""
-		self.logger = logger
-		self.auth = auth
+		self.logger = self.server.logger
+		self.auth = self.server.auth
 		pass
 
 
