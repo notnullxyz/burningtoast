@@ -1,11 +1,12 @@
 import SocketServer
 
-class ThreadingTCPServer(SocketServer.ThreadingTCPServer):
+class CustomThreadingTCPServer(SocketServer.ThreadingTCPServer):
 	"""
 	Extending ThreadingTCPServer to gain the ability of taking arguments (by override of constructor). 
 	I couldn't think of anything else yet.
 	"""
 	def __init__(self, server_address, requestHandler, logger, auth):
+		print "---CustomThreadingTCPServer init"
 		SocketServer.ThreadingTCPServer.__init__(self, server_address, requestHandler)
 		self.logger = logger
 		self.auth = auth
@@ -22,16 +23,16 @@ class TCPLogHandler(SocketServer.BaseRequestHandler):
 		"""
 		constructor with dependency injection for the logger class
 		"""
+		print "--- TCPLogHandler init"
 		self.logger = self.server.logger
 		self.auth = self.server.auth
-		pass
 
 
 	def setup(self):
 		"""
 		override: called before handle() for init purposes
 		"""
-		pass
+		print self.data
 
 
 	def handle(self):

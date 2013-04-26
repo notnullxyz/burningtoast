@@ -1,4 +1,4 @@
-from net import TCPLogHandler
+from net.TCPLogHandler import TCPLogHandler, CustomThreadingTCPServer
 import SocketServer
 
 if __name__ == "__main__":
@@ -7,7 +7,10 @@ if __name__ == "__main__":
 	"""
 	
 	HOST, PORT = "localhost",	1982
-	server = ThreadingTCPServer((HOST, PORT), TCPLogHandler)
-	server = ThreadingTCPServer((HOST, PORT), TCPLogHandler, XXXXXX, YYYYYY)	# new injections here
+
+	fakelogger = 0;
+	fakeauth = 0;
+
+	server = CustomThreadingTCPServer((HOST, PORT), TCPLogHandler, fakelogger, fakeauth)	# new injections here
 	server.serve_forever()
 
