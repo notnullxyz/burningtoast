@@ -1,4 +1,9 @@
 from twisted.internet.protocol import Protocol
+from twisted.internet.protocol import Factory
+
+class SpitoonFactory(Factory):
+    def buildProtocol(self, addr):
+        return Spitoon()
 
 class Spitoon(Protocol):
     
