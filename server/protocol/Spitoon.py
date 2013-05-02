@@ -1,26 +1,50 @@
 from twisted.internet.protocol import Protocol
 from twisted.internet.protocol import Factory
+from twisted.protocols.basic import LineReceiver
 
 class SpitoonFactory(Factory):
-    def buildProtocol(self, addr):
-        return Spitoon()
 
-class Spitoon(Protocol):
+    def __init__(self):
+        self.connections = {}   # to map connections
+
+    def buildProtocol(self, addr):
+        return Spitoon(self.connections)
+
+
+
+class Spitoon(LineReceiver):
     
-    def __init__ (self, factory):
-        self.factory = factory
+    def __init__ (self, connections):
+        self.connections = connections
+        self.origin = None  # origin connection name ??
+        self.state = "GETORIGIN"
 
     def connectionMade(self):
-        print "new connection in"
-        self.factory.numProtocols = self.factory.numProtocols + 1
-        self.transport.write("you're spitting as number %d" % (self.factory.numProtocols, ))
+        self.sendLine("ID?")
 
     def connectionLost(self, reason):
-        print "connection dropped"
-        self.factory.numProtocols = self.factory.numProtocols - 1
+        if self.connections.has_key(self.origin):
+            del self.connections[self.origin]
 
-    def dataReceived(self, data):
-        self.transport.write(data)
+    def lineReceived(self, line):
+        if self.state == "GETORIGIN":
+            self.handle_GETORIGIN(line)
+        else:
+            self.handle_PUSHENTRY(line)
 
+    def handle_GETORIGIN(self, origin):
+        if self.connections.has_key(origin):
+            self.sendLine("ORIGIN ALREADY SIGNED IN")
+            return
+        self.sendLine("OK: %s" % (origin,))
+        self.origin = origin
+        self.connections[origin] = self
+        self.state = "PUSHENTRY"
+
+    def handle_PUSHENTRY(self, entry):
+        entry = "%s -> %s" % (self.origin, entry)
+        for origin, protocol in self.connections.iteritems():
+            if protocol != self:
+                protocol.sendLine(entry);
 
 

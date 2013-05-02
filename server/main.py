@@ -8,15 +8,7 @@ if __name__ == "__main__":
 	"""
 
 	port = 1982
-        
-        endpoint = TCP4ServerEndpoint(reactor, port)
-        endpoint.listen(SpitoonFactory())
+
+        reactor.listenTCP(port, SpitoonFactory())
         reactor.run()
-
-
-
-
-
-
-        
 
