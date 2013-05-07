@@ -16,11 +16,11 @@ class Spitoon(LineReceiver):
     
     def __init__ (self, connections):
         self.connections = connections
-        self.origin = None  # origin connection name ??
+        self.origin = None  # origin connection name - just for clarity
         self.state = "GETORIGIN"
 
     def connectionMade(self):
-        self.sendLine("ID?")
+        self.sendLine("Who are you? ")
 
     def connectionLost(self, reason):
         if self.connections.has_key(self.origin):
@@ -34,9 +34,9 @@ class Spitoon(LineReceiver):
 
     def handle_GETORIGIN(self, origin):
         if self.connections.has_key(origin):
-            self.sendLine("ORIGIN ALREADY SIGNED IN")
+            self.sendLine("Someone with that name signed in already O_o ...")
             return
-        self.sendLine("OK: %s" % (origin,))
+        self.sendLine("OK : %s" % (origin,))
         self.origin = origin
         self.connections[origin] = self
         self.state = "PUSHENTRY"
