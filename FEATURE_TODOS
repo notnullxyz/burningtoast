@@ -1,0 +1,35 @@
+BurningToast
+
+API DOC:
+http://cdn.www.cdn77.com/documentation/CDNDocumentationAPI.pdf
+
+Information needed when connecting to burningToast:
+* user identification - non-strict
+* login (for CDN77) - sample@account.com 
+* password (for CDN77) - CDN77 API Key
+
+Output Logging:
+* Database logging (later, not important, overengineering...)
+* Output logging on the server running console. Output func with time/date
+
+WELCOME MSG:
+* Identify BurningToast, say hello, smile
+* Display all other logged in users on connect
+* warn of limits, misuse, performance, etc (FLAT FILE)
+
+PER REQUEST (Sent to All logged in users):
+* Display other users requests (user id, login, cdn resource id)
+* Display other users responses (user id, login, cdn resource id)
+* Timing/Profiling - FOr later. Nice to have.
+
+COMMANDS:
+* help - duh (show commands, and api limits)
+* quit - what could this command do?!?
+* users - show logged in users
+* purge_some - purge one file
+* purge_all - purge all files
+* prefetch - one or more files prefetched (later! not urgent)
+* stats         -
+* stats_all     - both stats and stats_all is luxury. later!
+* list - Listing of cdn details to get id. Not sure this is doable via API.
+
