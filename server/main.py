@@ -14,28 +14,31 @@ def loadPlugins():
 	p1 = Consolate()
 
 
-if __name__ == "__main__":
-	"""
-	port number could probably just be pulled from cmdline args
-        version and name should go into a conf file of sorts
-	"""
-
+def infomsg():
 	version = 0.1
 	awesomeName = "BurningToast %s" % (version,)
 	print "Starting up %s" % (awesomeName,)
 	default_port = 1982
 	
 
+if __name__ == "__main__":
+	"""
+	port number could probably just be pulled from cmdline args
+        version and name should go into a conf file of sorts
+	"""
+
+	infomsg()
+
 	# -------------
 	# for now, this is a very shitty way of loading plugins... TODO asap
 	# creating the base mainpart, and then merely instantiating plugins extending it
 	# should keep instances of them, in it's static registry, which cna then be injected
 	# into spitoon and used via the MainPart.plugins['pluginname'].function sort of thing...
-	pluginBase = MainPart()
+	plugbase = MainPart()
 	loadPlugins()
 	# --------------
 
-	reactor.listenTCP(default_port, SpitoonFactory(reactor))
+	reactor.listenTCP(default_port, SpitoonFactory(reactor, plugbase))
 	print "listen tcp on port %s" % (default_port,)
 	print "starting reactor, run forever"
 	reactor.run()
