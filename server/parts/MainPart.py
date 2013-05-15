@@ -1,23 +1,41 @@
 from datetime import datetime
 
-class MainPart:
+class MainPart(object):
 
-	plugins = {}
-	pluginCommands = {}
+	plugins = []
+	pluginCommands = {}		# pluginClassName:command
 
 	def __init__(self):
 		pass
 
 	def registerPlugin(self, partObject):
+		"""
+		Registers a plugin by taking a reference to its instance. 
+		Builds a map of plugin names to commands
+		"""
 		if isinstance(partObject, MainPart):
-			# map each cmd on the registrant to itself so it can be found
+			pluginClassName = partObject.__class__.__name__
 			for command in partObject.commandDict:
-				pluginCommands[partObject.__class__.__name__] = command
+				pluginCommands[partObject] = command
+			plugins.append(pluginClassName)
 
 
-	def std_date(self):
-		"""return a standard formed date for plugin consumption"""
-		now = datetime.now()
-		dateformat = "%Y-%m-%d %H:%M:%S"
-		return now.strftime(dateformat)
+	def call(self, commandName):
+		"""
+		All commands entered are passed here. This function seeks for commandName
+		in pluginCommands, and calls the mapped function on that plugin instance.
+		"""
+		for plugInstance, plugCmd in pluginCommands.iteritems():
+			if plugCmd == commandName:
+				plugInstance[plugCmd]()
+			else:
+				noCommandLikeThat(commandName)
+
+	
+	def noCommandLikeThat(self, bogusCommand):
+		"""
+		Handles all commands for which there is no mapping
+		"""
+		print "NO COMMAND LIKE THAT!"
+
 

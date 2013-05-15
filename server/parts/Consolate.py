@@ -20,15 +20,13 @@ class Consolate(MainPart):
 	def load(self):
 		"""
 		Needed for all burningToast plugins to register.
-		Must setup all plugin related stuff, and return available commands
+		Must setup all plugin related stuff
 		"""
 		commands = []
 		for command in self.commandDict:
 			commands.append(command)
 
 		self.registerPlugin(self)
-
-		return commands
 
 
 	def handle_command(self, command, args):
@@ -53,7 +51,7 @@ class Consolate(MainPart):
 		print str(outputLine)
 
 
-	def cspace(self):
+	def cspacer(self):
 		""" most complex method in the world, print a blank line"""
 		print ' '
 
