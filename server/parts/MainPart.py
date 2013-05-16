@@ -13,6 +13,7 @@ class MainPart(object):
 		Registers a plugin by taking a reference to its instance. 
 		Builds a map of plugin names to commands
 		"""
+		print "REGISTER PLUGIN CALLED: %s" % (partObject,)
 		if isinstance(partObject, MainPart):
 			pluginClassName = partObject.__class__.__name__
 			for command in partObject.commandDict:
@@ -25,11 +26,12 @@ class MainPart(object):
 		All commands entered are passed here. This function seeks for commandName
 		in pluginCommands, and calls the mapped function on that plugin instance.
 		"""
-		for plugInstance, plugCmd in pluginCommands.iteritems():
+		print "(call happening for %s)" % (commandName,)
+		for plugInstance, plugCmd in MainPart.pluginCommands.iteritems():
 			if plugCmd == commandName:
 				plugInstance[plugCmd]()
 			else:
-				noCommandLikeThat(commandName)
+				self.noCommandLikeThat(commandName)
 
 	
 	def noCommandLikeThat(self, bogusCommand):
