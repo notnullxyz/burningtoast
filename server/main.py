@@ -2,7 +2,7 @@ from protocol.Spitoon import SpitoonFactory
 from twisted.internet import reactor
 from parts.MainPart import MainPart
 
-from parts.Consolate import Consolate
+from parts.BuiltIns import BuiltIns 
 
 
 def loadPlugins():
@@ -11,7 +11,8 @@ def loadPlugins():
 	will run their load() methods, inserting them into the static plugin registry.
 	The instances created here will go out of scope with this function, perfect?
 	"""
-	
+	a = BuiltIns()
+
 
 
 def infomsg():
@@ -28,6 +29,7 @@ if __name__ == "__main__":
 	default_port = 1982
 
 	infomsg()
+	loadPlugins()
 
 	# -------------
 	# for now, this is a very shitty way of loading plugins... TODO asap

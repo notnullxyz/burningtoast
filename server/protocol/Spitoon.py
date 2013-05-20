@@ -55,16 +55,11 @@ class Spitoon(LineReceiver):
 		self.state = "REQUEST"
 
 	def handle_REQUEST(self, entry):
-		entry = "%s -> %s" % (self.origin, entry)
+		feedback = "%s -> %s" % (self.origin, entry)
 
 		for origin, protocol in self.connections.iteritems():
 			if protocol != self:
-				protocol.sendLine(entry);
-
-	def handle_COMMAND(self, command):
-		"""
-		This is going to be ugly, will dict it later...
-		"""
-		pass
-
+				protocol.sendLine(feedback);
+		print "line incoming: %s" % (entry,)
+		self.pluginbase.call(entry)
 
