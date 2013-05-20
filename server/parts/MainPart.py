@@ -1,4 +1,5 @@
 from datetime import datetime
+#import pprint
 
 class MainPart(object):
 
@@ -13,12 +14,15 @@ class MainPart(object):
 		Registers a plugin by taking a reference to its instance. 
 		Builds a map of plugin names to commands
 		"""
-		print "REGISTER PLUGIN CALLED: %s" % (partObject,)
+		#pp = pprint.PrettyPrinter(indent=4)
+		#pp.pprint(partObject.commandDict)
+
 		if isinstance(partObject, MainPart):
 			pluginClassName = partObject.__class__.__name__
 			for command in partObject.commandDict:
-				pluginCommands[partObject] = command
-			plugins.append(pluginClassName)
+				MainPart.pluginCommands.update({command:partObject})
+
+			MainPart.plugins.append(pluginClassName)
 
 
 	def call(self, commandName):
@@ -26,12 +30,14 @@ class MainPart(object):
 		All commands entered are passed here. This function seeks for commandName
 		in pluginCommands, and calls the mapped function on that plugin instance.
 		"""
-		print "(call happening for %s)" % (commandName,)
-		for plugInstance, plugCmd in MainPart.pluginCommands.iteritems():
+		invalidCommand = True
+		for plugCmd, plugInstance in MainPart.pluginCommands.items():
 			if plugCmd == commandName:
-				plugInstance[plugCmd]()
-			else:
-				self.noCommandLikeThat(commandName)
+				getattr(plugInstance, "command_" + plugCmd)()
+				invalidCommand = False
+		
+		if invalidCommand:
+			self.noCommandLikeThat(commandName)
 
 	
 	def noCommandLikeThat(self, bogusCommand):

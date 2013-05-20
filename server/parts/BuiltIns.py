@@ -11,7 +11,6 @@ class BuiltIns(MainPart):
 		"""
 		this should be the standard for plugins. Command dict to def map, and a call to load
 		"""
-		print "!!!!!!!!!!!"
 		self.commandDict = {
 				'help':'command_help', 
 				'version':'command_version'
