@@ -1,25 +1,10 @@
-from protocol.Spitoon import SpitoonFactory
+from core.Spitoon import SpitoonFactory
 from twisted.internet import reactor
 from parts.MainPart import MainPart
+from core.common import *
+import signal
+import sys
 
-from parts.BuiltIns import BuiltIns 
-
-
-def loadPlugins():
-	"""
-	instantiate plugin classes. They should all extend MainPart. On creation, they
-	will run their load() methods, inserting them into the static plugin registry.
-	The instances created here will go out of scope with this function, perfect?
-	"""
-	a = BuiltIns()
-
-
-
-def infomsg():
-	version = 0.1
-	awesomeName = "BurningToast %s" % (version,)
-	print "Starting up %s" % (awesomeName,)
-	
 
 if __name__ == "__main__":
 	"""
@@ -43,4 +28,3 @@ if __name__ == "__main__":
 	print "starting reactor, run forever"
 	reactor.run()
 
-	
