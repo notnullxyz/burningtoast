@@ -36,8 +36,8 @@ class Spitoon(LineReceiver):
 
     def connectionLost(self, reason):
         if self.connections.has_key(self.origin):
-                    self.sendLineToLog('Connection Lost: ' + self.origin)
-                    del self.connections[self.origin]
+            self.sendLineToLog('Connection Lost: ' + self.origin)
+            del self.connections[self.origin]
 
 
     def lineReceived(self, line):
@@ -59,36 +59,53 @@ class Spitoon(LineReceiver):
 
 
     def handle_REQUEST(self, entry):
-        feedback = "%s -> %s" % (self.origin, entry)
+        feedback = "req: %s => %s " % (self.origin, entry)
+        self.sendLineToAll(feedback)
+        callResponse = self.pluginbase.call(entry)
+        if callResponse != None:
+            self.handle_pluginResponse(callResponse)
+        else:
+            # there will be something to do when a plugin call is silent.log it?
+            pass;
 
+
+    def sendLineToAll(self, line, skipSelf=True):
+        """
+        All logic for sending a string to everyone that is connected.
+        Sends the line as-is.
+        Loop through all connections, and sendline to each. 
+        This feels clunky. TODO: investigate more optimal approach.
+        """
         for origin, protocol in self.connections.iteritems():
-            if protocol != self:
-                protocol.sendLine(feedback);
-                self.sendLineToLog('Request from %s: %s' % (self.origin, entry))
-        self.pluginbase.call(entry)
+            if skipSelf == True and protocol == self:
+                pass
+            else:
+                protocol.sendLine(line)
 
 
-        def sendLineToAll(self, line):
-            """
-            all logic for sending a string to everyone that is connected
-            """
-            pass
+    def sendLineToClient(self, line):
+        """
+        all logic for sending a string to a specific connections
+        """
+        pass
 
 
-        def sendLineToClient(self, line):
-            """
-            all logic for sending a string to a specific connections
-            """
-            pass
+    def sendLineToLog(send, line):
+        """
+        logic for sending a line to a logging system.
+        this should be plugin-based to have a choice between console, db,
+        logfile, remote log, etc...
+        For now, the default is to output everything to the server console
+        """
+        dt = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+        print "%s : %s" % (dt, line)
 
+    def handle_pluginResponse(self, responseValue):
+        """
+        Handling of anything that a call to a plugin might return.
+        This is hard, because it could be anything, that has to go anywhere.
+        Make it available in some kind of callback or store?
+        """"
+        self.sendLineToClient(responseValue) # send to client, until we know!
 
-        def sendLineToLog(send, line):
-            """
-            logic for sending a line to a logging system.
-            this should be plugin-based to have a choice between console, db,
-            logfile, remote log, etc...
-            For now, the default is to output everything to the server console
-            """
-            dt = strftime("%Y-%m-%d %H:%M:%S", gmtime())
-            print "%s : %s" % (dt, line)
 

@@ -42,5 +42,6 @@ class BuiltIns(MainPart):
         Built in standard 'version' command
         """
         print "THIS IS THE VERSION COMMAND!?!?"
+        return "5.5"
 
 

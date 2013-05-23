@@ -29,15 +29,18 @@ class MainPart(object):
         """
         All commands entered are passed here. This function seeks for commandName
         in pluginCommands, and calls the mapped function on that plugin instance.
+        The return value of all plugin command calls are captured and returned.
         """
         invalidCommand = True
+        returnValue = None
         for plugCmd, plugInstance in MainPart.pluginCommands.items():
             if plugCmd == commandName:
-                getattr(plugInstance, "command_" + plugCmd)()
+                returnValue = getattr(plugInstance, "command_" + plugCmd)()
                 invalidCommand = False
         
         if invalidCommand:
             self.noCommandLikeThat(commandName)
+        return returnValue
 
     
     def noCommandLikeThat(self, bogusCommand):
