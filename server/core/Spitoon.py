@@ -21,13 +21,13 @@ class Spitoon(LineReceiver):
     and the plugin base class instance so that plugins can be used (or assed along)
     """
 
-        def __init__ (self, connections, reactorInstance, pluginBaseInstance):
+    def __init__ (self, connections, reactorInstance, pluginBaseInstance):
         self.connections = connections
         self.reactorInstance = reactorInstance
-            self.pluginbase = pluginBaseInstance
-            self.origin = None  # origin connection name - just for clarity
+        self.pluginbase = pluginBaseInstance
+        self.origin = None  # origin connection name - just for clarity
         self.state = "GETORIGIN"
-            self.sendLineToLog('Spitoon construction...')
+        self.sendLineToLog('Spitoon construction...')
 
 
     def connectionMade(self):
@@ -53,7 +53,7 @@ class Spitoon(LineReceiver):
             return
         self.sendLine("Hello %s" % (origin,))
         self.origin = origin
-                self.sendLineToLog('Handshake: ' + origin)
+        self.sendLineToLog('Handshake: ' + origin)
         self.connections[origin] = self
         self.state = "REQUEST"
 

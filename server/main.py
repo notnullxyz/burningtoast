@@ -1,9 +1,7 @@
 from core.Spitoon import SpitoonFactory
 from twisted.internet import reactor
 from parts.MainPart import MainPart
-from core.common import *
-import signal
-import sys
+from core.common import infomsg,loadPlugins
 
 
 if __name__ == "__main__":
