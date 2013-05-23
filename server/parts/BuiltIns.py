@@ -13,7 +13,8 @@ class BuiltIns(MainPart):
 		"""
 		self.commandDict = {
 				'help':'command_help', 
-				'version':'command_version'
+				'version':'command_version',
+				'quit':'command_quit'
 				}
 		self.load()
 		super(BuiltIns, self).registerPlugin(self)
