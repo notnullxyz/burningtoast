@@ -45,8 +45,9 @@ class MainPart(object):
     
     def noCommandLikeThat(self, bogusCommand):
         """
-        Handles all commands for which there is no mapping
+        Handles all commands for which there is no mapping.
+        Return -1 for "no such command"
         """
-        print "NO COMMAND LIKE THAT!"
+        return -1
 
 

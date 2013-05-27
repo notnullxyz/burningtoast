@@ -34,14 +34,19 @@ class BuiltIns(MainPart):
         Built in standard 'help' command.
         This is what command methods should look like.
         """
-        print "THIS IS THE HELP COMMAND!"
+        return {0:"TODO: a decent help response mechanism"}
 
 
     def command_version(self):
         """
         Built in standard 'version' command
         """
-        print "THIS IS THE VERSION COMMAND!?!?"
-        return "5.5"
+        return {0:"TODO: get the version somewhere and return it, guy"}
 
 
+    def command_quit(self):
+        """
+        Do something to sign off the user gracefully
+        """
+        # todo
+        pass

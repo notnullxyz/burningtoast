@@ -49,9 +49,9 @@ class Spitoon(LineReceiver):
 
     def handle_GETORIGIN(self, origin):
         if self.connections.has_key(origin):
-            self.sendLine("Someone with that name signed in already O_o ...")
+            self.sendLineToClient("ID in use...")
             return
-        self.sendLine("Hello %s" % (origin,))
+        self.sendLineToClient("Hello %s" % (origin,))
         self.origin = origin
         self.sendLineToLog('Handshake: ' + origin)
         self.connections[origin] = self
@@ -87,7 +87,7 @@ class Spitoon(LineReceiver):
         """
         all logic for sending a string to a specific connections
         """
-        pass
+        self.sendLine(line)
 
 
     def sendLineToLog(send, line):
@@ -100,12 +100,13 @@ class Spitoon(LineReceiver):
         dt = strftime("%Y-%m-%d %H:%M:%S", gmtime())
         print "%s : %s" % (dt, line)
 
-    def handle_pluginResponse(self, responseValue):
+    def handle_pluginResponse(self, responseDict):
         """
         Handling of anything that a call to a plugin might return.
         This is hard, because it could be anything, that has to go anywhere.
         Make it available in some kind of callback or store?
-        """"
-        self.sendLineToClient(responseValue) # send to client, until we know!
+        """
+        print responseDict
+        #self.sendLineToClient(responseValue) # send to client, until we know!
 
 
