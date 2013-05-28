@@ -25,7 +25,7 @@ class MainPart(object):
             MainPart.plugins.append(pluginClassName)
 
 
-    def call(self, commandName):
+    def call(self, commandName, commandParams=None):
         """
         All commands entered are passed here. This function seeks for commandName
         in pluginCommands, and calls the mapped function on that plugin instance.

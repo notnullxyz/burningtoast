@@ -44,7 +44,13 @@ class Spitoon(LineReceiver):
         if self.state == "GETORIGIN":
             self.handle_GETORIGIN(line)
         else:
-            self.handle_REQUEST(line)
+            # break line into multiple parts: command, param1...
+            requestList = line.split()
+            # count items... if > 1 then command and params, else just command
+            requestCommand = requestList[0]
+            requestParams = requestList[1:]
+
+            self.handle_REQUEST(requestCommand, requestParams)
 
 
     def handle_GETORIGIN(self, origin):
@@ -58,10 +64,10 @@ class Spitoon(LineReceiver):
         self.state = "REQUEST"
 
 
-    def handle_REQUEST(self, entry):
+    def handle_REQUEST(self, reqCmd, reqParams):
         feedback = "req: %s => %s " % (self.origin, entry)
         self.sendLineToAll(feedback)
-        callResponse = self.pluginbase.call(entry)
+        callResponse = self.pluginbase.call(reqCmd) # todo: send reqParams
         if callResponse != None:
             self.handle_pluginResponse(callResponse)
         else:
