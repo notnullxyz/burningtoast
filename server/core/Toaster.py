@@ -2,7 +2,7 @@ from twisted.internet.protocol import Factory
 from twisted.protocols.basic import LineReceiver
 from time import gmtime, strftime
 
-class SpitoonFactory(Factory):
+class ToasterFactory(Factory):
 
     def __init__(self, reactorInstance, pluginBaseInstance):
         self.connections = {}   # to map connections
@@ -10,13 +10,13 @@ class SpitoonFactory(Factory):
         self.pluginBaseInstance = pluginBaseInstance
 
     def buildProtocol(self, addr):
-        return Spitoon(self.connections, self.reactorInstance, self.pluginBaseInstance)
+        return Toaster(self.connections, self.reactorInstance, self.pluginBaseInstance)
 
 
 
-class Spitoon(LineReceiver):
+class Toaster(LineReceiver):
     """
-    Spitoon handles all connections and the logic thereof. 
+    Toaster handles all connections and the logic thereof. 
     It takes parameters connections (as the connected client list), the reactor instance
     and the plugin base class instance so that plugins can be used (or assed along)
     """
@@ -27,7 +27,7 @@ class Spitoon(LineReceiver):
         self.pluginbase = pluginBaseInstance
         self.origin = None  # origin connection name - just for clarity
         self.state = "GETORIGIN"
-        self.sendLineToLog('Spitoon construction...')
+        self.sendLineToLog('Toaster construction...')
 
 
     def connectionMade(self):
