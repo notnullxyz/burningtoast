@@ -34,19 +34,19 @@ class BuiltIns(MainSlice):
         Built in standard 'help' command.
         This is what command methods should look like.
         """
-        return {0:"TODO: a decent help response mechanism"}
+        return {'status': 0, 'data':"TODO: a decent help response mechanism"}
 
 
     def command_version(self):
         """
         Built in standard 'version' command
         """
-        return {0:"TODO: get the version somewhere and return it, guy"}
+        return {'status': 0, 'data':"TODO: get the version somewhere and return it, guy"}
 
 
     def command_quit(self):
         """
         Do something to sign off the user gracefully
         """
-        # todo
-        pass
+        return {'status': 999, 'data':None}
+

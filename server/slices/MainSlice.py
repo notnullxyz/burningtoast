@@ -37,17 +37,18 @@ class MainSlice(object):
             if plugCmd == commandName:
                 returnValue = getattr(plugInstance, "command_" + plugCmd)()
                 invalidCommand = False
-        
+
         if invalidCommand:
-            self.noCommandLikeThat(commandName)
+            returnValue = self.noCommandLikeThat(commandName)
         return returnValue
 
-    
+
     def noCommandLikeThat(self, bogusCommand):
         """
         Handles all commands for which there is no mapping.
         Return -1 for "no such command"
         """
-        return -1
-
+        data = "Call %s non-existent" % (bogusCommand,)
+        returnDict = {'status':-1, 'data':data}
+        return returnDict
 

@@ -13,7 +13,6 @@ class ToasterFactory(Factory):
         return Toaster(self.connections, self.reactorInstance, self.pluginBaseInstance)
 
 
-
 class Toaster(LineReceiver):
     """
     Toaster handles all connections and the logic thereof. 
@@ -25,33 +24,33 @@ class Toaster(LineReceiver):
         self.connections = connections
         self.reactorInstance = reactorInstance
         self.pluginbase = pluginBaseInstance
-        self.origin = None  # origin connection name - just for clarity
+        self.origin = None 
         self.state = "GETORIGIN"
         self.sendLineToLog('Toaster construction...')
 
-
     def connectionMade(self):
         self.sendLine("Who are you? ")
-
 
     def connectionLost(self, reason):
         if self.connections.has_key(self.origin):
             self.sendLineToLog('Connection Lost: ' + self.origin)
             del self.connections[self.origin]
 
-
     def lineReceived(self, line):
         if self.state == "GETORIGIN":
             self.handle_GETORIGIN(line)
         else:
-            # break line into multiple parts: command, param1...
-            requestList = line.split()
-            # count items... if > 1 then command and params, else just command
-            requestCommand = requestList[0]
-            requestParams = requestList[1:]
-
-            self.handle_REQUEST(requestCommand, requestParams)
-
+            if len(line):
+                requestList = line.split()
+                requestCommand = requestList[0]
+                if len(requestList) > 1:
+                    requestParams = requestList[1:]
+                else:
+                    requestParams = None
+                
+                self.handle_REQUEST(requestCommand, requestParams)
+            else:
+                self.sendLineToClient('.')
 
     def handle_GETORIGIN(self, origin):
         if self.connections.has_key(origin):
@@ -63,17 +62,21 @@ class Toaster(LineReceiver):
         self.connections[origin] = self
         self.state = "REQUEST"
 
-
     def handle_REQUEST(self, reqCmd, reqParams):
-        feedback = "req: %s => %s " % (self.origin, entry)
+        feedback = "req: %s => %s " % (self.origin, reqCmd)
         self.sendLineToAll(feedback)
-        callResponse = self.pluginbase.call(reqCmd) # todo: send reqParams
+        callResponse = self.pluginbase.call(reqCmd, reqParams)
         if callResponse != None:
+            print "Response code: %s" % (callResponse['status'], )
+            if callResponse['status'] == 999:
+                self.terminateSelf()
             self.handle_pluginResponse(callResponse)
         else:
-            # there will be something to do when a plugin call is silent.log it?
             pass;
 
+    def terminateSelf(self):
+        self.sendLineToClient('** goodbye **')
+        # how to cleanly disconnect and cleanup a client connection?
 
     def sendLineToAll(self, line, skipSelf=True):
         """
@@ -88,13 +91,11 @@ class Toaster(LineReceiver):
             else:
                 protocol.sendLine(line)
 
-
     def sendLineToClient(self, line):
         """
         all logic for sending a string to a specific connections
         """
         self.sendLine(line)
-
 
     def sendLineToLog(send, line):
         """
