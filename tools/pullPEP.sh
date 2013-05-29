@@ -10,12 +10,17 @@ gitPath=$(whereis -b git | awk '{print $2}')
 #pylintPath=$(whereis -b pylint | awk '{print $2}')
 pep8Path=$(command -v pep8)
 seemsOK=false
-mailRecipients="marlon@kbye.co.za"
+mailRecipients="marlon@kbye.co.za,marlon@rightshift.biz"
 mailContent="$HOME/tmp/mail"
+testBranch="dev"
+todayDate=$(date)
+
+echo "______________ Nightly PEP8 report for $repoPath for $todayDate ___________" > $mailContent
+echo " " >> $mailContent
 
 if [ -z $pep8Path ];
 then
-    echo "pep8 must be installed... ciao." > $mailContent
+    echo "pep8 must be installed... ciao." >> $mailContent
     exit
 fi
 
@@ -29,20 +34,26 @@ then
     cd $repoRoot;
     $gitPath clone $repoUrl >> $mailContent;
     seemsOK=true
+    echo " " >> $mailContent
 else
     echo "$repoRoot$repoPath exists, trying to pull" >> $mailContent;
     cd $repoRoot$repoPath;
-    $gitPath pull >> $mailContent;
+    $gitPath pull >> $mailContent >> $mailContent;
     seemsOK=true
+    echo " " >> $mailContent
 fi
 
 if [ $seemsOK ];
 then
+    echo " " >> $mailContent
     echo "============ pep8 report start ==========================================" >> $mailContent;
     cd $repoRoot$repoPath;
+    $gitPath checkout --track -b $testBranch origin/$testBranch >> $mailContent;
     $pep8Path --exclude=*.md * >> $mailContent;
     echo "=========================================================================" >> $mailContent;
+    echo " " >> $mailContent
+    echo "Ok, Bye!" >> $mailContent
 fi
 
-cat $mailContent | /usr/bin/mail -s "$repoPath pep8 Report" $mailRecipients
+cat $mailContent | /usr/bin/mail -s "$repoPath pep8 : Nightly Report for $todayDate" $mailRecipients
 
