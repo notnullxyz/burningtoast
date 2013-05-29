@@ -1,6 +1,6 @@
 from core.Toaster import ToasterFactory
 from twisted.internet import reactor
-from parts.MainPart import MainPart
+from slices.MainSlice import MainSlice
 from core.common import infomsg,loadPlugins
 
 
@@ -16,10 +16,10 @@ if __name__ == "__main__":
 
     # -------------
     # for now, this is a very shitty way of loading plugins... TODO asap
-    # creating the base mainpart, and then merely instantiating plugins extending it
+    # creating the base mainslice, and then merely instantiating plugins extending it
     # should keep instances of them, in it's static registry, which cna then be injected
-    # into spitoon and used via the MainPart.plugins['pluginname'].function sort of thing...
-    plugbase = MainPart()
+    # into Toaster and used via the MainSlice.plugins['pluginname'].function sort of thing...
+    plugbase = MainSlice()
 
     reactor.listenTCP(default_port, ToasterFactory(reactor, plugbase))
     print "listen tcp on port %s" % (default_port,)
