@@ -1,6 +1,6 @@
-from MainPart import MainPart
+from MainSlice import MainSlice
 
-class BuiltIns(MainPart):
+class BuiltIns(MainSlice):
     """
     This is the sample plugin for future plugins and contains the built-in commands
     and features of core.
