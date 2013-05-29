@@ -1,7 +1,7 @@
 from datetime import datetime
 #import pprint
 
-class MainPart(object):
+class MainSlice(object):
 
     plugins = []
     pluginCommands = {}        # pluginClassName:command
@@ -9,20 +9,20 @@ class MainPart(object):
     def __init__(self):
         pass
 
-    def registerPlugin(self, partObject):
+    def registerPlugin(self, sliceObject):
         """
         Registers a plugin by taking a reference to its instance. 
         Builds a map of plugin names to commands
         """
         #pp = pprint.PrettyPrinter(indent=4)
-        #pp.pprint(partObject.commandDict)
+        #pp.pprint(sliceObject.commandDict)
 
-        if isinstance(partObject, MainPart):
-            pluginClassName = partObject.__class__.__name__
-            for command in partObject.commandDict:
-                MainPart.pluginCommands.update({command:partObject})
+        if isinstance(sliceObject, MainSlice):
+            pluginClassName = sliceObject.__class__.__name__
+            for command in sliceObject.commandDict:
+                MainSlice.pluginCommands.update({command:sliceObject})
 
-            MainPart.plugins.append(pluginClassName)
+            MainSlice.plugins.append(pluginClassName)
 
 
     def call(self, commandName, commandParams=None):
@@ -33,7 +33,7 @@ class MainPart(object):
         """
         invalidCommand = True
         returnValue = None
-        for plugCmd, plugInstance in MainPart.pluginCommands.items():
+        for plugCmd, plugInstance in MainSlice.pluginCommands.items():
             if plugCmd == commandName:
                 returnValue = getattr(plugInstance, "command_" + plugCmd)()
                 invalidCommand = False

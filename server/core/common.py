@@ -1,4 +1,4 @@
-from parts.BuiltIns import BuiltIns
+from slices.BuiltIns import BuiltIns
 
 
 def infomsg():
@@ -9,7 +9,7 @@ def infomsg():
 
 def loadPlugins():
     """
-    instantiate plugin classes. They should all extend MainPart. On creation, they
+    instantiate plugin classes. They should all extend MainSlice. On creation, they
     will run their load() methods, inserting them into the static plugin registry.
     The instances created here will go out of scope with this function, perfect?
     """
