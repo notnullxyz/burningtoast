@@ -1,4 +1,4 @@
-from core.Spitoon import SpitoonFactory
+from core.Toaster import ToasterFactory
 from twisted.internet import reactor
 from parts.MainPart import MainPart
 from core.common import infomsg,loadPlugins
@@ -21,7 +21,7 @@ if __name__ == "__main__":
     # into spitoon and used via the MainPart.plugins['pluginname'].function sort of thing...
     plugbase = MainPart()
 
-    reactor.listenTCP(default_port, SpitoonFactory(reactor, plugbase))
+    reactor.listenTCP(default_port, ToasterFactory(reactor, plugbase))
     print "listen tcp on port %s" % (default_port,)
     print "starting reactor, run forever"
     reactor.run()
