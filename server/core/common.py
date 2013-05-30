@@ -13,6 +13,9 @@ def loadPlugins():
     will run their load() methods, inserting them into the static plugin registry.
     The instances created here will go out of scope with this function, perfect?
     """
+    #perhaps
+    # for each in a string list of plugin part classnames:
+    #     a = reflectTheStringClassName()
     a = BuiltIns()
 
 

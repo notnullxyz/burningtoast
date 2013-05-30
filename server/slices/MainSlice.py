@@ -25,7 +25,7 @@ class MainSlice(object):
             MainSlice.plugins.append(pluginClassName)
 
 
-    def call(self, commandName):
+    def call(self, commandName, commandParams=None):
         """
         All commands entered are passed here. This function seeks for commandName
         in pluginCommands, and calls the mapped function on that plugin instance.
@@ -37,16 +37,18 @@ class MainSlice(object):
             if plugCmd == commandName:
                 returnValue = getattr(plugInstance, "command_" + plugCmd)()
                 invalidCommand = False
-        
+
         if invalidCommand:
-            self.noCommandLikeThat(commandName)
+            returnValue = self.noCommandLikeThat(commandName)
         return returnValue
 
-    
+
     def noCommandLikeThat(self, bogusCommand):
         """
-        Handles all commands for which there is no mapping
+        Handles all commands for which there is no mapping.
+        Return -1 for "no such command"
         """
-        print "NO COMMAND LIKE THAT!"
-
+        data = "Call %s non-existent" % (bogusCommand,)
+        returnDict = {'status':-1, 'data':data}
+        return returnDict
 
