@@ -2,6 +2,7 @@ from twisted.internet.protocol import Factory
 from twisted.protocols.basic import LineReceiver
 from time import gmtime, strftime
 
+
 class ToasterFactory(Factory):
 
     def __init__(self, reactorInstance, pluginBaseInstance):
@@ -15,12 +16,12 @@ class ToasterFactory(Factory):
 
 class Toaster(LineReceiver):
     """
-    Toaster handles all connections and the logic thereof. 
+    Toaster handles all connections and the logic thereof.
     It takes parameters connections (as the connected client list), the reactor instance
     and the plugin base class instance so that plugins can be used (or assed along)
     """
 
-    def __init__ (self, connections, reactorInstance, pluginBaseInstance):
+    def __init__(self, connections, reactorInstance, pluginBaseInstance):
         self.connections = connections
         self.reactorInstance = reactorInstance
         self.pluginbase = pluginBaseInstance
@@ -47,7 +48,7 @@ class Toaster(LineReceiver):
                     requestParams = requestList[1:]
                 else:
                     requestParams = None
-                
+ 
                 self.handle_REQUEST(requestCommand, requestParams)
             else:
                 self.sendLineToClient('.')
@@ -66,13 +67,13 @@ class Toaster(LineReceiver):
         feedback = "req: %s => %s " % (self.origin, reqCmd)
         self.sendLineToAll(feedback)
         callResponse = self.pluginbase.call(reqCmd, reqParams)
-        if callResponse != None:
+        if callResponse is not None:
             print "Response code: %s" % (callResponse['status'], )
             if callResponse['status'] == 999:
                 self.terminateSelf()
             self.handle_pluginResponse(callResponse)
         else:
-            pass;
+            pass
 
     def terminateSelf(self):
         self.sendLineToClient('** goodbye **')
@@ -82,11 +83,11 @@ class Toaster(LineReceiver):
         """
         All logic for sending a string to everyone that is connected.
         Sends the line as-is.
-        Loop through all connections, and sendline to each. 
+        Loop through all connections, and sendline to each.
         This feels clunky. TODO: investigate more optimal approach.
         """
         for origin, protocol in self.connections.iteritems():
-            if skipSelf == True and protocol == self:
+            if skipSelf is True and protocol == self:
                 pass
             else:
                 protocol.sendLine(line)
@@ -115,5 +116,3 @@ class Toaster(LineReceiver):
         """
         print responseDict
         #self.sendLineToClient(responseValue) # send to client, until we know!
-
-
