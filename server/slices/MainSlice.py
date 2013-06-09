@@ -27,9 +27,9 @@ class MainSlice(object):
 
     def call(self, commandName, commandParams=None):
         """
-        All commands entered are passed here. This function seeks for 
-        commandName in pluginCommands, and calls the mapped function 
-        on that plugin instance. The return value of all plugin 
+        All commands entered are passed here. This function seeks for
+        commandName in pluginCommands, and calls the mapped function
+        on that plugin instance. The return value of all plugin
         command calls are captured and returned.
         """
         invalidCommand = True

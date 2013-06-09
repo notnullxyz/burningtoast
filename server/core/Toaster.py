@@ -11,21 +11,22 @@ class ToasterFactory(Factory):
         self.pluginBaseInstance = pluginBaseInstance
 
     def buildProtocol(self, addr):
-        return Toaster(self.connections, self.reactorInstance, self.pluginBaseInstance)
-
+        return Toaster(self.connections, self.reactorInstance, 
+                        self.pluginBaseInstance)
 
 class Toaster(LineReceiver):
     """
     Toaster handles all connections and the logic thereof.
-    It takes parameters connections (as the connected client list), the reactor instance
-    and the plugin base class instance so that plugins can be used (or assed along)
+    It takes parameters connections (as the connected client list), 
+    the reactor instance and the plugin base class instance so that 
+    plugins can be used (or assed along)
     """
 
     def __init__(self, connections, reactorInstance, pluginBaseInstance):
         self.connections = connections
         self.reactorInstance = reactorInstance
         self.pluginbase = pluginBaseInstance
-        self.origin = None 
+        self.origin = None
         self.state = "GETORIGIN"
         self.sendLineToLog('Toaster construction...')
 
@@ -33,7 +34,7 @@ class Toaster(LineReceiver):
         self.sendLine("Who are you? ")
 
     def connectionLost(self, reason):
-        if self.connections.has_key(self.origin):
+        if self.origin in self.connections:
             self.sendLineToLog('Connection Lost: ' + self.origin)
             del self.connections[self.origin]
 
@@ -48,13 +49,13 @@ class Toaster(LineReceiver):
                     requestParams = requestList[1:]
                 else:
                     requestParams = None
- 
+
                 self.handle_REQUEST(requestCommand, requestParams)
             else:
                 self.sendLineToClient('.')
 
     def handle_GETORIGIN(self, origin):
-        if self.connections.has_key(origin):
+        if origin in self.connections:
             self.sendLineToClient("ID in use...")
             return
         self.sendLineToClient("Hello %s" % (origin,))

@@ -16,10 +16,10 @@ if __name__ == "__main__":
 
     # -------------
     # for now, this is a very shitty way of loading plugins... TODO asap
-    # creating the base mainslice, and then merely 
+    # creating the base mainslice, and then merely
     # instantiating plugins extending it
-    # should keep instances of them, in it's static registry, 
-    # which cna then be injected into Toaster and used via the 
+    # should keep instances of them, in it's static registry,
+    # which cna then be injected into Toaster and used via the
     # MainSlice.plugins['pluginname'].function sort of thing...
     plugbase = MainSlice()
 
