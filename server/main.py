@@ -1,18 +1,21 @@
 from core.Toaster import ToasterFactory
 from twisted.internet import reactor
 from slices.MainSlice import MainSlice
-from core.common import infomsg, loadPlugins
-
+from core.common import infomsg, loadPlugins, loadConfig, fatality_iminent
 
 if __name__ == "__main__":
     """
     port number could probably just be pulled from cmdline args
         version and name should go into a conf file of sorts
     """
-    default_port = 1982
+    conf = loadConfig()
+    if conf is None:
+        fatality_iminent('no config file')
 
     infomsg()
     loadPlugins()
+
+    default_port = conf.getint('server','port')
 
     # -------------
     # for now, this is a very shitty way of loading plugins... TODO asap

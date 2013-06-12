@@ -71,7 +71,7 @@ class Toaster(LineReceiver):
         self.sendLineToAll(feedback)
         callResponse = self.pluginbase.call(reqCmd, reqParams)
         if callResponse is not None:
-            print "Response code: %s" % (callResponse['status'], )
+            #print "Response code: %s" % (callResponse['status'], )
             if callResponse['status'] == 999:
                 self.terminateSelf()
             self.handle_pluginResponse(callResponse)
@@ -115,9 +115,10 @@ class Toaster(LineReceiver):
 
     def handle_pluginResponse(self, responseDict):
         """
-        Handling of anything that a call to a plugin might return.
-        This is hard, because it could be anything, that has to go anywhere.
-        Make it available in some kind of callback or store?
+        Rethink:
+        Simple - plugins do work, and responds with results. all we ever get
+        back, is a result, nothing weird.
         """
+        print "PLUGIN RESPONSE: "
         print responseDict
         #self.sendLineToClient(responseValue) # send to client, until we know!
