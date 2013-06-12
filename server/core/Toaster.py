@@ -11,14 +11,15 @@ class ToasterFactory(Factory):
         self.pluginBaseInstance = pluginBaseInstance
 
     def buildProtocol(self, addr):
-        return Toaster(self.connections, self.reactorInstance, 
-                        self.pluginBaseInstance)
+        return Toaster(self.connections, self.reactorInstance,
+                self.pluginBaseInstance)
+
 
 class Toaster(LineReceiver):
     """
     Toaster handles all connections and the logic thereof.
-    It takes parameters connections (as the connected client list), 
-    the reactor instance and the plugin base class instance so that 
+    It takes parameters connections (as the connected client list),
+    the reactor instance and the plugin base class instance so that
     plugins can be used (or assed along)
     """
 
@@ -37,6 +38,7 @@ class Toaster(LineReceiver):
         if self.origin in self.connections:
             self.sendLineToLog('Connection Lost: ' + self.origin)
             del self.connections[self.origin]
+            self.transport.abortConnection()
 
     def lineReceived(self, line):
         if self.state == "GETORIGIN":
@@ -69,7 +71,7 @@ class Toaster(LineReceiver):
         self.sendLineToAll(feedback)
         callResponse = self.pluginbase.call(reqCmd, reqParams)
         if callResponse is not None:
-            print "Response code: %s" % (callResponse['status'], )
+            #print "Response code: %s" % (callResponse['status'], )
             if callResponse['status'] == 999:
                 self.terminateSelf()
             self.handle_pluginResponse(callResponse)
@@ -78,6 +80,8 @@ class Toaster(LineReceiver):
 
     def terminateSelf(self):
         self.sendLineToClient('** goodbye **')
+        self.sendLineToAll('%s disconnected.' % (self.origin, ))
+        self.connectionLost('client wants out')
         # how to cleanly disconnect and cleanup a client connection?
 
     def sendLineToAll(self, line, skipSelf=True):
@@ -111,9 +115,10 @@ class Toaster(LineReceiver):
 
     def handle_pluginResponse(self, responseDict):
         """
-        Handling of anything that a call to a plugin might return.
-        This is hard, because it could be anything, that has to go anywhere.
-        Make it available in some kind of callback or store?
+        Rethink:
+        Simple - plugins do work, and responds with results. all we ever get
+        back, is a result, nothing weird.
         """
+        print "PLUGIN RESPONSE: "
         print responseDict
         #self.sendLineToClient(responseValue) # send to client, until we know!
