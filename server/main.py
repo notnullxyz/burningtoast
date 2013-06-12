@@ -25,5 +25,5 @@ if __name__ == "__main__":
 
     reactor.listenTCP(default_port, ToasterFactory(reactor, plugbase))
     print "listen tcp on port %s" % (default_port,)
-    print "starting reactor, run forever"
+    print "starting reactor, run forever. There's no SIGINT cleanups, ok?"
     reactor.run()

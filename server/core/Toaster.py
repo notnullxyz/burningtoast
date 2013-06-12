@@ -38,6 +38,7 @@ class Toaster(LineReceiver):
         if self.origin in self.connections:
             self.sendLineToLog('Connection Lost: ' + self.origin)
             del self.connections[self.origin]
+            self.transport.abortConnection()
 
     def lineReceived(self, line):
         if self.state == "GETORIGIN":
@@ -79,6 +80,8 @@ class Toaster(LineReceiver):
 
     def terminateSelf(self):
         self.sendLineToClient('** goodbye **')
+        self.sendLineToAll('%s disconnected.' % (self.origin, ))
+        self.connectionLost('client wants out')
         # how to cleanly disconnect and cleanup a client connection?
 
     def sendLineToAll(self, line, skipSelf=True):
