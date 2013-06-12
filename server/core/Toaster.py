@@ -11,14 +11,15 @@ class ToasterFactory(Factory):
         self.pluginBaseInstance = pluginBaseInstance
 
     def buildProtocol(self, addr):
-        return Toaster(self.connections, self.reactorInstance, 
-                        self.pluginBaseInstance)
+        return Toaster(self.connections, self.reactorInstance,
+                self.pluginBaseInstance)
+
 
 class Toaster(LineReceiver):
     """
     Toaster handles all connections and the logic thereof.
-    It takes parameters connections (as the connected client list), 
-    the reactor instance and the plugin base class instance so that 
+    It takes parameters connections (as the connected client list),
+    the reactor instance and the plugin base class instance so that
     plugins can be used (or assed along)
     """
 

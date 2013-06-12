@@ -39,7 +39,8 @@ class BuiltIns(MainSlice):
         """
         Built in standard 'version' command
         """
-        return {'status': 0, 'data': "TODO: get the version somewhere and return it, guy"}
+        return {'status': 0,
+                'data': "TODO: get the version somewhere and return it, guy"}
 
     def command_quit(self):
         """
