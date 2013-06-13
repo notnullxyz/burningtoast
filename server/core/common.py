@@ -4,11 +4,12 @@ from sys import exit
 
 cfname = 'mains.cfg'
 cfg = None
+version = 0.111
+appName = "BurningToast %s" % (version,)
+
 
 def infomsg():
-    version = 0.1
-    awesomeName = "BurningToast %s" % (version,)
-    print "Starting up %s" % (awesomeName,)
+    print "Starting up %s" % (appName,)
 
 
 def loadPlugins():
@@ -19,9 +20,10 @@ def loadPlugins():
     here will go out of scope with this function, perfect?
     """
     #perhaps
-    # for each in a string list of plugin part classnames:
+    # for each in config file section of plugin part classnames:
     #     a = reflectTheStringClassName()
     a = BuiltIns()
+
 
 def configFileExists():
     try:
@@ -29,6 +31,7 @@ def configFileExists():
             return True
     except:
         return False
+
 
 def loadConfig():
     if configFileExists():
@@ -39,6 +42,7 @@ def loadConfig():
     else:
         print "Could not load configuration, you need a %s file" % (cfname, )
         return None
+
 
 def fatality_iminent(why):
     print "Something is wrong, and we can't really go on like this"

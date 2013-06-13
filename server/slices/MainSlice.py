@@ -7,8 +7,8 @@ class MainSlice(object):
     plugins = []
     pluginCommands = {}        # pluginClassName:command
 
-    def __init__(self):
-        pass
+    def __init__(self, configObject):
+        MainSlice.config = configObject
 
     def registerPlugin(self, sliceObject):
         """

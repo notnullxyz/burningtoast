@@ -5,14 +5,15 @@ from time import gmtime, strftime
 
 class ToasterFactory(Factory):
 
-    def __init__(self, reactorInstance, pluginBaseInstance):
+    def __init__(self, reactorInstance, pluginBaseInstance, confObject):
         self.connections = {}   # to map connections
         self.reactorInstance = reactorInstance
         self.pluginBaseInstance = pluginBaseInstance
+        self.configObject = confObject
 
     def buildProtocol(self, addr):
         return Toaster(self.connections, self.reactorInstance,
-                self.pluginBaseInstance)
+                    self.pluginBaseInstance, self.configObject)
 
 
 class Toaster(LineReceiver):
@@ -23,10 +24,12 @@ class Toaster(LineReceiver):
     plugins can be used (or assed along)
     """
 
-    def __init__(self, connections, reactorInstance, pluginBaseInstance):
+    def __init__(self, connections, reactorInstance,
+            pluginBaseInstance, conf):
         self.connections = connections
         self.reactorInstance = reactorInstance
         self.pluginbase = pluginBaseInstance
+        self.config = conf
         self.origin = None
         self.state = "GETORIGIN"
         self.sendLineToLog('Toaster construction...')
@@ -119,6 +122,6 @@ class Toaster(LineReceiver):
         Simple - plugins do work, and responds with results. all we ever get
         back, is a result, nothing weird.
         """
-        print "PLUGIN RESPONSE: "
         print responseDict
-        #self.sendLineToClient(responseValue) # send to client, until we know!
+        self.sendLineToClient(responseDict['data'])
+

@@ -39,8 +39,10 @@ class BuiltIns(MainSlice):
         """
         Built in standard 'version' command
         """
-        return {'status': 0,
-                'data': "TODO: get the version somewhere and return it, guy"}
+        #ver = "%s %s" % (self.config.get('general','name'),
+        #    self.config.get('general','version'))
+        ver = "<server version placeholder>"
+        return {'status': 0, 'data': ver}
 
     def command_quit(self):
         """
