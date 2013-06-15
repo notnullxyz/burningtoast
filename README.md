@@ -6,6 +6,9 @@ The basic is idea is, send any request, do any work, and let the sender know wha
 Check out the issues, jump in, or read on at the Wiki.  
 ---
 # Current list of generally pleasant people  
-* Marlon v/d Linde
-* Zac Ball
+* Marlon v/d Linde - Core/Toaster/Slices
+* Alexia Pouyaud - DataProvider/Localisation
+* Zac Ball - Django/UI
+
+
   
