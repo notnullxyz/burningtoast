@@ -2,30 +2,31 @@ import mysql.connector
 from core.common import loadConfig
 
 
-class Languages():
+class Language(object):
     """
     Languages opens a connection to the lang database and handles
     the translation of the UI using the user language in set config file.
     Languages then severs the connection.
     """
-    def __init__(self, reactorInstance, pluginBaseInstance):
+    def __init__(self):
 	self.conf = loadConfig()
 		
 	
-    def connectToDbLang():
+    def connectToDbLang(self):
         """
 	Establishes connection to dbLang.
         """
 		
 	# open connection
-	cnx = mysql.connector.connect(user='alexia', password='c0ff33', host='ws1.chillijuice.net', database='dbLang')
+	self.cnx = mysql.connector.connect(user='alexia', password='c0ff33', host='ws1.chillijuice.net', database='dbToast_test')
                                      
         
-    def getTranslastion(name):
+    def getTranslation(self, name):
 	"""
 	(str -> str)
 		
-        Fetches the translation for the parameter from the collection stored in dbLang.
+        Fetches the translation for parameter from the collection stored in dbToast_test.
+        Pretty tard code for now but I'll get smarted along the way... or you'll just have to put up with it.
 		
 	>>> getTranslation('hello')
 	>>> Bonjour
@@ -34,16 +35,23 @@ class Languages():
 		
 	"""
 
-	user_language = self.conf.get("general", "language")
-		
-        cursor = cnx.cursor()
-        query = ("SELECT %s FROM tblLang WHERE MsgName =  %s")
-        
-        cursor.execute(query, (user_language, name))
-        for (val) in cursor:
-            print(val)
-        cursor.close()
+	user_language = str(self.conf.get("general", "language"))
 
+	self.connectToDbLang()
+		
+        cursor = self.cnx.cursor()
+        nameStr = str(name)
+        query = ( "SELECT " + user_language + " FROM tblLang WHERE MsgName = '" + nameStr + "'" )
+        
+        cursor.execute(query)
+
+        val = str(cursor.fetchone())   
+        
+        # close cursor
+        cursor.close()
+        
 	# close connection
-	cnx.close()
+	self.cnx.close()
+
+	return val
     

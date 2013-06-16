@@ -2,6 +2,8 @@ from core.Toaster import ToasterFactory
 from twisted.internet import reactor
 from slices.MainSlice import MainSlice
 from core.common import infomsg, loadPlugins, loadConfig, fatality_iminent
+from lang.languages import Language
+
 
 if __name__ == "__main__":
     """
@@ -15,6 +17,9 @@ if __name__ == "__main__":
     infomsg()
     loadPlugins()
 
+    lang = Language()
+
+    
     default_port = conf.getint('server','port')
 
     # -------------
@@ -26,7 +31,7 @@ if __name__ == "__main__":
     # MainSlice.plugins['pluginname'].function sort of thing...
     plugbase = MainSlice()
 
-    reactor.listenTCP(default_port, ToasterFactory(reactor, plugbase))
+    reactor.listenTCP(default_port, ToasterFactory(reactor, plugbase, lang))
     print "listen tcp on port %s" % (default_port,)
     print "starting reactor, run forever. There's no SIGINT cleanups, ok?"
     reactor.run()
