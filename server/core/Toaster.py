@@ -32,7 +32,7 @@ class Toaster(LineReceiver):
         self.sendLineToLog('Toaster construction...')
 
     def connectionMade(self):
-        self.sendLine("Who are you? ")
+        self.sendLine(getLangStr('who'))
 
     def connectionLost(self, reason):
         if self.origin in self.connections:
@@ -58,11 +58,11 @@ class Toaster(LineReceiver):
 
     def handle_GETORIGIN(self, origin):
         if origin in self.connections:
-            self.sendLineToClient("ID in use...")
+            self.sendLineToClient("Username taken...")
             return
-        self.sendLineToClient("Hello %s" % (origin,))
+        self.sendLineToClient("Hello" + "%s" % (origin,))
         self.origin = origin
-        self.sendLineToLog('Handshake: ' + origin)
+        self.sendLineToLog('Handshake' + ':' + origin)
         self.connections[origin] = self
         self.state = "REQUEST"
 
@@ -79,9 +79,9 @@ class Toaster(LineReceiver):
             pass
 
     def terminateSelf(self):
-        self.sendLineToClient('** goodbye **')
-        self.sendLineToAll('%s disconnected.' % (self.origin, ))
-        self.connectionLost('client wants out')
+        self.sendLineToClient('**' + 'goodbye' + '**')
+        self.sendLineToAll('%s' + 'disconnected' + '.' % (self.origin, ))
+        self.connectionLost('user wants out')
         # how to cleanly disconnect and cleanup a client connection?
 
     def sendLineToAll(self, line, skipSelf=True):
