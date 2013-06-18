@@ -17,7 +17,9 @@ class Language(object):
         Establishes connection to dbLang.
         """
         # open connection
-        self.cnx = mysql.connector.connect(user='alexia', password='c0ff33', host='ws1.chillijuice.net', database='dbToast_test')
+        self.cnx = mysql.connector.connect(user='alexia', password='c0ff33', 
+                host='ws1.chillijuice.net', database='dbToast_test',
+                charset='utf8')
 
     def getTranslation(self, name):
         """
@@ -34,7 +36,7 @@ class Language(object):
         user_language = str(self.conf.get("general", "language"))
 
         self.connectToDbLang()
-        cursor = self.cnx.cursor()
+        cursor = self.cnx.cursor(buffered=True)
         nameStr = str(name)
         query = ("SELECT " + user_language + " FROM tblLang WHERE MsgName = '" + nameStr + "'")
         cursor.execute(query)
