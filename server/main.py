@@ -17,7 +17,7 @@ if __name__ == "__main__":
     infomsg()
     loadPlugins()
 
-    lang = Language()
+    lang = Language(conf)
 
     
     default_port = conf.getint('server','port')

@@ -1,7 +1,7 @@
 from twisted.internet.protocol import Factory
 from twisted.protocols.basic import LineReceiver
 from time import gmtime, strftime
-
+import sys
 
 class ToasterFactory(Factory):
 
@@ -37,7 +37,10 @@ class Toaster(LineReceiver):
         return self.lang.getTranslation(stringx)
 
     def connectionMade(self):
-        self.sendLine(self.tr('namePrompt'))
+        translatedNamePrompt = self.tr('namePrompt')
+        print translatedNamePrompt
+        sys.stdout.buffer.write(translatedNamePrompt)
+        self.sendLine(translatedNamePrompt)
 
     def connectionLost(self, reason):
         if self.origin in self.connections:
