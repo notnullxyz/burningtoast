@@ -19,4 +19,3 @@ finally:
 
 print "Sent:     {}".format(data)
 print "Received: {}".format(received)
-
