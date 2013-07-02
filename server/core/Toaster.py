@@ -30,11 +30,15 @@ class Toaster(LineReceiver):
         self.lang = lang
         self.origin = None
         self.state = "GETORIGIN"
-        self.sendLineToLog('Toaster construction...')
+        self.sendLineToLog(self.tr('toasting'))
 
     def tr(self, stringx):
+        """
+        String translation wrapper. Returns an encoded byte string
+        to satisfy Twisted's 'data must not not be unicode'
+        """
         ss = self.lang.getTranslation(stringx)
-        return ss
+        return ss.encode('utf8')
 
     def connectionMade(self):
         translatedNamePrompt = self.tr('namePrompt')
@@ -42,7 +46,7 @@ class Toaster(LineReceiver):
 
     def connectionLost(self, reason):
         if self.origin in self.connections:
-            self.sendLineToLog(self.tr('conLost') + ': ' + self.origin)
+            self.sendLineToLog(' '.join([self.tr('conLost'), self.origin]))
             del self.connections[self.origin]
             self.transport.abortConnection()
 
@@ -66,9 +70,9 @@ class Toaster(LineReceiver):
         if origin in self.connections:
             self.sendLineToClient(self.tr('usernameTaken'))
             return
-        self.sendLineToClient(self.tr('hello') + "%s" % (origin,))
+        self.sendLineToClient(' '.join([self.tr('hello'), origin]))
         self.origin = origin
-        self.sendLineToLog(self.tr('shake') + ':' + origin)
+        self.sendLineToLog(' '.join([self.tr('handshake'), origin]))
         self.connections[origin] = self
         self.state = "REQUEST"
 
@@ -86,7 +90,7 @@ class Toaster(LineReceiver):
 
     def terminateSelf(self):
         self.sendLineToClient('**' + self.tr('goodbye') + '**')
-        self.sendLineToAll('%s' + self.tr('disc') + '.' % (self.origin, ))
+        self.sendLineToAll(' '.join([self.origin, self.tr('disconnect')]))
         self.connectionLost(self.tr('userQuit'))
         # how to cleanly disconnect and cleanup a client connection?
 

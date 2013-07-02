@@ -43,14 +43,11 @@ class Language(object):
 
         self.connectToDbLang()
         cursor = self.cnx.cursor()
-        query = ("SELECT " + user_language + " FROM tblLang WHERE MsgName = '" + name + "'")
-        cursor.execute(query)
-
+        query = ("""SELECT """ + user_language + """ FROM tblLang WHERE MsgName = %s""")
+        cursor.execute(query, (name, ))
         val = cursor.fetchone()
-
         cursor.close()
         self.cnx.close()
-        # returning [] out of the result tuple, for xlation, we'll only need a
-        # unicode object back.
+        # For xlation, we'll only need a unicode object back, not the whole tuple
         return val[0]
 
