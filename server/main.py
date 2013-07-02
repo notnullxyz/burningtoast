@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
     lang = Language(conf)
 
-    default_port = conf.getint('server','port')
+    default_port = conf.getint('server', 'port')
 
     # ------- this comment will be gone some day -----------------------
     # for now, this is a very shitty way of loading plugins... TODO asap

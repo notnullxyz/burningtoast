@@ -2,6 +2,7 @@ from twisted.internet.protocol import Factory
 from twisted.protocols.basic import LineReceiver
 from time import gmtime, strftime
 
+
 class ToasterFactory(Factory):
 
     def __init__(self, reactorInstance, pluginBaseInstance, lang):
@@ -11,8 +12,9 @@ class ToasterFactory(Factory):
         self.lang = lang
 
     def buildProtocol(self, addr):
-        return Toaster(self.connections, self.reactorInstance,
-                self.pluginBaseInstance, self.lang)
+        return Toaster(
+            self.connections, self.reactorInstance,
+            self.pluginBaseInstance, self.lang)
 
 
 class Toaster(LineReceiver):

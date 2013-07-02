@@ -5,6 +5,7 @@ from sys import exit
 cfname = 'mains.cfg'
 cfg = None
 
+
 def infomsg():
     version = 0.1
     awesomeName = "BurningToast %s" % (version,)
@@ -23,12 +24,14 @@ def loadPlugins():
     #     a = reflectTheStringClassName()
     a = BuiltIns()
 
+
 def configFileExists():
     try:
         with open(cfname):
             return True
     except:
         return False
+
 
 def loadConfig():
     if configFileExists():
@@ -39,6 +42,7 @@ def loadConfig():
     else:
         print "Could not load configuration, you need a %s file" % (cfname, )
         return None
+
 
 def fatality_iminent(why):
     print "Something is wrong, and we can't really go on like this"

@@ -30,8 +30,9 @@ class Language(object):
     def getTranslation(self, name):
         """
         (str -> str)
-            Fetches the translation for parameter from the collection stored in dbToast_test.
-            Pretty tard code for now but I'll get smarter along the way... or you'll just have to put up with it.
+            Fetches the translation for parameter from the collection stored
+            in dbToast_test. Pretty tard code for now but I'll get smarter
+            along the way... or you'll just have to put up with it.
 
         >>> getTranslation('hello')
         >>> Bonjour
@@ -43,11 +44,13 @@ class Language(object):
 
         self.connectToDbLang()
         cursor = self.cnx.cursor()
-        query = ("""SELECT """ + user_language + """ FROM tblLang WHERE MsgName = %s""")
+        query = (
+            """SELECT """
+            + user_language
+            + """ FROM tblLang WHERE MsgName = %s""")
         cursor.execute(query, (name, ))
         val = cursor.fetchone()
         cursor.close()
         self.cnx.close()
-        # For xlation, we'll only need a unicode object back, not the whole tuple
+        # For xlation, only need a unicode object back, not the whole tuple
         return val[0]
-
