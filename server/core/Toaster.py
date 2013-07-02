@@ -2,17 +2,17 @@ from twisted.internet.protocol import Factory
 from twisted.protocols.basic import LineReceiver
 from time import gmtime, strftime
 
-
 class ToasterFactory(Factory):
 
-    def __init__(self, reactorInstance, pluginBaseInstance):
+    def __init__(self, reactorInstance, pluginBaseInstance, lang):
         self.connections = {}   # to map connections
         self.reactorInstance = reactorInstance
         self.pluginBaseInstance = pluginBaseInstance
+        self.lang = lang
 
     def buildProtocol(self, addr):
         return Toaster(self.connections, self.reactorInstance,
-                self.pluginBaseInstance)
+                self.pluginBaseInstance, self.lang)
 
 
 class Toaster(LineReceiver):
@@ -23,20 +23,26 @@ class Toaster(LineReceiver):
     plugins can be used (or assed along)
     """
 
-    def __init__(self, connections, reactorInstance, pluginBaseInstance):
+    def __init__(self, connections, reactorInstance, pluginBaseInstance, lang):
         self.connections = connections
         self.reactorInstance = reactorInstance
         self.pluginbase = pluginBaseInstance
+        self.lang = lang
         self.origin = None
         self.state = "GETORIGIN"
         self.sendLineToLog('Toaster construction...')
 
+    def tr(self, stringx):
+        ss = self.lang.getTranslation(stringx)
+        return ss
+
     def connectionMade(self):
-        self.sendLine("Who are you? ")
+        translatedNamePrompt = self.tr('namePrompt')
+        self.sendLine(translatedNamePrompt)
 
     def connectionLost(self, reason):
         if self.origin in self.connections:
-            self.sendLineToLog('Connection Lost: ' + self.origin)
+            self.sendLineToLog(self.tr('conLost') + ': ' + self.origin)
             del self.connections[self.origin]
             self.transport.abortConnection()
 
@@ -58,11 +64,11 @@ class Toaster(LineReceiver):
 
     def handle_GETORIGIN(self, origin):
         if origin in self.connections:
-            self.sendLineToClient("ID in use...")
+            self.sendLineToClient(self.tr('usernameTaken'))
             return
-        self.sendLineToClient("Hello %s" % (origin,))
+        self.sendLineToClient(self.tr('hello') + "%s" % (origin,))
         self.origin = origin
-        self.sendLineToLog('Handshake: ' + origin)
+        self.sendLineToLog(self.tr('shake') + ':' + origin)
         self.connections[origin] = self
         self.state = "REQUEST"
 
@@ -79,9 +85,9 @@ class Toaster(LineReceiver):
             pass
 
     def terminateSelf(self):
-        self.sendLineToClient('** goodbye **')
-        self.sendLineToAll('%s disconnected.' % (self.origin, ))
-        self.connectionLost('client wants out')
+        self.sendLineToClient('**' + self.tr('goodbye') + '**')
+        self.sendLineToAll('%s' + self.tr('disc') + '.' % (self.origin, ))
+        self.connectionLost(self.tr('userQuit'))
         # how to cleanly disconnect and cleanup a client connection?
 
     def sendLineToAll(self, line, skipSelf=True):
