@@ -2,7 +2,7 @@ from core.Toaster import ToasterFactory
 from twisted.internet import reactor
 from slices.MainSlice import MainSlice
 from core.common import infomsg, loadPlugins, loadConfig, fatality_iminent
-from lang.languages import Language
+from lang.Language import Language
 
 
 if __name__ == "__main__":

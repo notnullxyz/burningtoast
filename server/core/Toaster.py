@@ -30,11 +30,11 @@ class Toaster(LineReceiver):
         self.lang = lang
         self.origin = None
         self.state = "GETORIGIN"
-        self.sendLineToLog('Toaster construction...')
+        self.sendLineToLog(self.tr('toasting'))
 
     def tr(self, stringx):
         ss = self.lang.getTranslation(stringx)
-        return ss
+        return ss.encode('utf8')
 
     def connectionMade(self):
         translatedNamePrompt = self.tr('namePrompt')
@@ -66,9 +66,9 @@ class Toaster(LineReceiver):
         if origin in self.connections:
             self.sendLineToClient(self.tr('usernameTaken'))
             return
-        self.sendLineToClient(self.tr('hello') + "%s" % (origin,))
+        self.sendLineToClient(self.tr('hello').join(origin,))
         self.origin = origin
-        self.sendLineToLog(self.tr('shake') + ':' + origin)
+        self.sendLineToLog(self.tr('handshake') + ':' + origin)
         self.connections[origin] = self
         self.state = "REQUEST"
 
