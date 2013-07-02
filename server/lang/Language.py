@@ -5,8 +5,8 @@ from core.common import loadConfig
 class Language(object):
     """
     Languages opens a connection to the lang database and handles
-    the translation of the UI using the user language in set config file.
-    Languages then severs the connection.
+    the translation using the user language set in config file.
+    Language then severs the connection.
     Alexia Pouyaud
     """
     def __init__(self, conf):
@@ -16,16 +16,22 @@ class Language(object):
         """
         Establishes connection to dbLang.
         """
-        # open connection
-        self.cnx = mysql.connector.connect(user='alexia', password='c0ff33', 
-                host='ws1.chillijuice.net', database='dbToast_test',
-                charset='utf8')
+        dbconf = {
+            'user': self.conf.get('database', 'username'),
+            'password': self.conf.get('database', 'password'),
+            'host': self.conf.get('database', 'hostname'),
+            'database': self.conf.get('database', 'database'),
+            'port': self.conf.getint('database', 'port'),
+            'charset': self.conf.get('database', 'charset'),
+        }
+
+        self.cnx = mysql.connector.connect(**dbconf)
 
     def getTranslation(self, name):
         """
         (str -> str)
             Fetches the translation for parameter from the collection stored in dbToast_test.
-            Pretty tard code for now but I'll get smarted along the way... or you'll just have to put up with it.
+            Pretty tard code for now but I'll get smarter along the way... or you'll just have to put up with it.
 
         >>> getTranslation('hello')
         >>> Bonjour
@@ -33,20 +39,18 @@ class Language(object):
         >>> Aurevoir
         """
 
-        user_language = str(self.conf.get("general", "language"))
+        user_language = self.conf.get("general", "language")
 
         self.connectToDbLang()
-        cursor = self.cnx.cursor(buffered=True)
-        nameStr = str(name)
-        query = ("SELECT " + user_language + " FROM tblLang WHERE MsgName = '" + nameStr + "'")
+        cursor = self.cnx.cursor()
+        query = ("SELECT " + user_language + " FROM tblLang WHERE MsgName = '" + name + "'")
         cursor.execute(query)
 
-        val = str(cursor.fetchone())
+        val = cursor.fetchone()
 
         cursor.close()
         self.cnx.close()
+        # returning [] out of the result tuple, for xlation, we'll only need a
+        # unicode object back.
+        return val[0]
 
-        print "Val: " + val
-        print "Val 2: " + val.encode()
-
-        return val
