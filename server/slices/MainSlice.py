@@ -18,7 +18,7 @@ class MainSlice(object):
         if isinstance(sliceObject, MainSlice):
             pluginClassName = sliceObject.__class__.__name__
             print '...loading slice', pluginClassName
-            for command in sliceObject.commandList:
+            for command in sliceObject.commandDict:
                 MainSlice.pluginCommands.update({command: sliceObject})
 
             MainSlice.plugins.append(pluginClassName)

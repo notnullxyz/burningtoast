@@ -12,20 +12,21 @@ class BuiltIns(MainSlice):
         this should be the standard for plugins. 
         Command list of allowed calls on this plugin/slice
         """
-        self.commandList = [
-            'help',
-            'language',
-            'quit'
-        ]
+        self.commandDict = {
+            'help': 'Prints this help command.',
+            'language': 'Shows what language is specified in config',
+            'quit': 'Disconnects and drops the current connection'
+        }
         self.load()
         super(BuiltIns, self).registerPlugin(self)
+
 
     def load(self):
         """
         Needed for all burningToast plugins to register, constructor call.
         """
         commands = []
-        for command in self.commandList:
+        for command in self.commandDict:
             commands.append(command)
 
     def command_help(self):
@@ -33,9 +34,13 @@ class BuiltIns(MainSlice):
         Built in standard 'help' command.
         This is what command methods should look like.
         """
+        helpOutput = ''
         # loop through all plugins in MainSlice, and find their help dict??
         # then print it out as a guide
-        return {'status': 0, 'data': "TODO: a decent help response mechanism"}
+        for cmd, sliceObject in MainSlice.pluginCommands.items():
+            helpOutput = ''.join(cmd + "-" + sliceObject.commandDict[cmd])
+
+        return {'status': 0, 'data': helpOutput}
 
     def command_language(self):
         """
