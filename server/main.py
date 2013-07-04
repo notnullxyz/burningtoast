@@ -30,7 +30,7 @@ if __name__ == "__main__":
     # which cna then be injected into Toaster and used via the
     # MainSlice.plugins['pluginname'].function sort of thing...
     # ------------------------------------------------------------------
-    plugbase = MainSlice()
+    plugbase = MainSlice(conf)
 
     reactor.listenTCP(default_port, ToasterFactory(reactor, plugbase, lang))
     listenMsg = lang.getTranslation('sysListenPort')

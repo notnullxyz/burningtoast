@@ -9,14 +9,14 @@ class BuiltIns(MainSlice):
 
     def __init__(self):
         """
-        this should be the standard for plugins. Command dict to def map,
-        and a call to load
+        this should be the standard for plugins. 
+        Command list of allowed calls on this plugin/slice
         """
-        self.commandDict = {
-            'help': 'command_help',
-            'version': 'command_version',
-            'quit': 'command_quit'
-        }
+        self.commandList = [
+            'help',
+            'language',
+            'quit'
+        ]
         self.load()
         super(BuiltIns, self).registerPlugin(self)
 
@@ -25,7 +25,7 @@ class BuiltIns(MainSlice):
         Needed for all burningToast plugins to register, constructor call.
         """
         commands = []
-        for command in self.commandDict:
+        for command in self.commandList:
             commands.append(command)
 
     def command_help(self):
@@ -33,19 +33,20 @@ class BuiltIns(MainSlice):
         Built in standard 'help' command.
         This is what command methods should look like.
         """
+        # loop through all plugins in MainSlice, and find their help dict??
+        # then print it out as a guide
         return {'status': 0, 'data': "TODO: a decent help response mechanism"}
 
-    def command_version(self):
+    def command_language(self):
         """
-        Built in standard 'version' command
+        Built in 'lang' command, returns whatever is set in the config.
         """
-        #ver = "%s %s" % (self.config.get('general','name'),
-        #    self.config.get('general','version'))
-        ver = "<server version placeholder>"
-        return {'status': 0, 'data': ver}
+        lang = MainSlice.config.get('general', 'language')
+        return {'status': 0, 'data': lang}
 
     def command_quit(self):
         """
         Do something to sign off the user gracefully
+        Sending back a status 999, Toaster will know what to do
         """
         return {'status': 999, 'data': None}

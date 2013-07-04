@@ -113,6 +113,9 @@ class Toaster(LineReceiver):
         """
         all logic for sending a string to a specific connections
         """
+        if line is None:
+            line = '<sendLineToClient:line data None - not normal>'
+        
         self.sendLine(line)
 
     def sendLineToLog(send, line):

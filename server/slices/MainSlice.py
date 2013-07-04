@@ -1,5 +1,4 @@
 from datetime import datetime
-#import pprint
 
 
 class MainSlice(object):
@@ -15,12 +14,11 @@ class MainSlice(object):
         Registers a plugin by taking a reference to its instance.
         Builds a map of plugin names to commands
         """
-        #pp = pprint.PrettyPrinter(indent=4)
-        #pp.pprint(sliceObject.commandDict)
 
         if isinstance(sliceObject, MainSlice):
             pluginClassName = sliceObject.__class__.__name__
-            for command in sliceObject.commandDict:
+            print '...loading slice', pluginClassName
+            for command in sliceObject.commandList:
                 MainSlice.pluginCommands.update({command: sliceObject})
 
             MainSlice.plugins.append(pluginClassName)
@@ -36,7 +34,11 @@ class MainSlice(object):
         returnValue = None
         for plugCmd, plugInstance in MainSlice.pluginCommands.items():
             if plugCmd == commandName:
-                returnValue = getattr(plugInstance, "command_" + plugCmd)()
+                try:
+                    returnValue = getattr(plugInstance, "command_" + plugCmd)()
+                except AttributeError:
+                    print "Valid command, but no definition for it was found in the plugin. ?!?"
+                
                 invalidCommand = False
 
         if invalidCommand:
