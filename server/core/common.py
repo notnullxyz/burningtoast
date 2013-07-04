@@ -8,6 +8,7 @@ version = 0.111
 appName = "BurningToast %s" % (version,)
 
 
+
 def infomsg():
     print "Starting up %s" % (appName,)
 
