@@ -34,11 +34,11 @@ class BuiltIns(MainSlice):
         Built in standard 'help' command.
         This is what command methods should look like.
         """
-        helpOutput = ''
+        helpOutput = {}
         # loop through all plugins in MainSlice, and find their help dict??
         # then print it out as a guide
         for cmd, sliceObject in MainSlice.pluginCommands.items():
-            helpOutput = ''.join(cmd + "-" + sliceObject.commandDict[cmd])
+            helpOutput.update({cmd: sliceObject.commandDict[cmd]})
 
         return {'status': 0, 'data': helpOutput}
 

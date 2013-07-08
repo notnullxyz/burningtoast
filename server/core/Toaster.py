@@ -40,7 +40,7 @@ class Toaster(LineReceiver):
         to satisfy Twisted's 'data must not not be unicode'
         """
         ss = self.lang.getTranslation(stringx)
-        return ss.encode('utf8')
+        return ss.encode('utf8')    # todo use config from toastCore
 
     def connectionMade(self):
         translatedNamePrompt = self.tr('namePrompt')
@@ -129,7 +129,7 @@ class Toaster(LineReceiver):
         dt = strftime("%Y-%m-%d %H:%M:%S", gmtime())
         print "%s | %s" % (dt, line)
 
-    def handle_pluginResponse(self, responseDict, asJson=True):
+    def handle_pluginResponse(self, responseDict, asJson=True): # TODO use toastCore config
         """
         Rethink:
         Simple - most plugins do work, and responds with results. all we ever get
