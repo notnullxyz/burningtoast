@@ -23,7 +23,7 @@ class MainSlice(object):
 
             MainSlice.plugins.append(pluginClassName)
 
-    def call(self, commandName, commandParams=None):
+    def call(self, commandName, commandParams=None, que):
         """
         All commands entered are passed here. This function seeks for
         commandName in pluginCommands, and calls the mapped function
@@ -38,12 +38,12 @@ class MainSlice(object):
                     returnValue = getattr(plugInstance, "command_" + plugCmd)()
                 except AttributeError:
                     print "Valid command, but no definition for it was found in the plugin. ?!?"
-                
+
                 invalidCommand = False
 
         if invalidCommand:
             returnValue = self.noCommandLikeThat(commandName)
-        return returnValue
+        que.put(returnValue)
 
     def noCommandLikeThat(self, bogusCommand):
         """
