@@ -16,8 +16,8 @@ class BuiltIns(MainSlice):
             'help': 'Prints this help command.',
             'language': 'Shows what language is specified in config',
             'quit': 'Disconnects and drops the current connection',
- #           'who': """Shows a list of logged in usernames/id's""",
- #           'date': 'Returns the current date in a full format',
+            'who': "Shows a list of logged in clients",
+            'date': 'Returns the current date in a full format'
 #            'msg': 'Message another user. msg <userid/name> <message>',
 #            'plugins': 'List all registered plugins.'
         }
@@ -37,7 +37,11 @@ class BuiltIns(MainSlice):
         """
         BuiltIn who command. Shows who else is logged in.
         """
-        pass
+        f = MainSlice.getFromExternalDataMap(self, 'users')
+        print "= = = = = These seem to be the logged in users at this time = = = = = ="
+        print f
+        print "= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = "
+        return None
 
 
     def command_help(self):

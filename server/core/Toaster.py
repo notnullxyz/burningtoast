@@ -53,6 +53,7 @@ class Toaster(LineReceiver):
             self.sendLineToLog('Connection Lost ' + self.origin)
             del self.connections[self.origin]
             self.transport.abortConnection()
+            self.publishPublicData('logout', self.origin)
 
     def lineReceived(self, line):
         if self.state == "GETORIGIN":
@@ -77,6 +78,7 @@ class Toaster(LineReceiver):
             return
         self.sendLineToClient(' '.join([self.tr('hello'), origin]))
         self.origin = origin
+        self.publishPublicData('login', origin)
         self.sendLineToLog('Handshake ' + origin)
         self.connections[origin] = self
         self.state = "REQUEST"
@@ -163,3 +165,13 @@ class Toaster(LineReceiver):
         self.sendLineToClient(exhaust)
         logLine = "Plugin response code %s sent to %s" % (responseDict['status'], self.origin)
         self.sendLineToLog(logLine)
+
+    def publishPublicData(self, action, client):
+        """
+        Publishes data in provided, into the plugin base (MainSlice)
+        provided to this constructor. This can/should be called on any change
+        that affects this data, for instance 'logged in users'
+        """
+        por = self.__class__.__name__
+        self.pluginbase.updateExternalDataMap(str(action), str(client), por)
+

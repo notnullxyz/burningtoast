@@ -4,10 +4,13 @@ from datetime import datetime
 class MainSlice(object):
 
     plugins = []
-    pluginCommands = {}        # pluginClassName:command
+    pluginCommands = {}
 
     def __init__(self, configObject):
         MainSlice.config = configObject
+        self.externalDataMap = {
+            'users': []
+        }
 
     def registerPlugin(self, sliceObject):
         """
@@ -28,18 +31,21 @@ class MainSlice(object):
         All commands entered are passed here. This function seeks for
         commandName in pluginCommands, and calls the mapped function
         on that plugin instance. The return value of all plugin
-        command calls are captured and returned.
+        command calls are pushed into a queue for multiprocessing
         """
         invalidCommand = True
         returnValue = None
         for plugCmd, plugInstance in MainSlice.pluginCommands.items():
             if plugCmd == commandName:
+                cc = "command_" + plugCmd
                 try:
-                    returnValue = getattr(plugInstance, "command_" + plugCmd)()
+                    returnValue = getattr(plugInstance, cc)()
                 except AttributeError:
-                    print "Valid command, but no definition for it was found in the plugin. ?!?"
+                    print "!!!!! Valid command, but no definition for it " \
+                        "was found in the plugin: ", plugCmd
 
                 invalidCommand = False
+                break
 
         if invalidCommand:
             returnValue = self.noCommandLikeThat(commandName)
@@ -53,3 +59,24 @@ class MainSlice(object):
         data = "Call %s non-existent" % (bogusCommand,)
         returnDict = {'status': -1, 'data': data}
         return returnDict
+
+    def updateExternalDataMap(self, action, client, pointOfOrigin):
+        """
+        Takes a dictionary of data to store in this instance, to make it
+        accesible to all plugins
+        """
+        # pointOfOrigin will be used to control data storage at some point
+        if action is 'logout':
+           if client in self.externalDataMap['users']:
+                self.externalDataMap['users'].remove(client)
+        elif action is 'login':
+            if client not in self.externalDataMap['users']:
+                self.externalDataMap['users'].append(client)
+
+    def getFromExternalDataMap(self, key):
+        """
+        Returns a key and it's value/s from the externalDataMap
+        """
+        if key in self.externalDataMap:
+            return self.externalDataMap[key]
+
