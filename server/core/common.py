@@ -4,12 +4,13 @@ from sys import exit
 
 cfname = 'mains.cfg'
 cfg = None
+version = 0.111
+appName = "BurningToast %s" % (version,)
+
 
 
 def infomsg():
-    version = 0.1
-    awesomeName = "BurningToast %s" % (version,)
-    print "Starting up %s" % (awesomeName,)
+    print "Starting up %s" % (appName,)
 
 
 def loadPlugins():
@@ -20,7 +21,7 @@ def loadPlugins():
     here will go out of scope with this function, perfect?
     """
     #perhaps
-    # for each in a string list of plugin part classnames:
+    # for each in config file section of plugin part classnames:
     #     a = reflectTheStringClassName()
     a = BuiltIns()
 

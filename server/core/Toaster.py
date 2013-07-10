@@ -1,7 +1,8 @@
 from twisted.internet.protocol import Factory
 from twisted.protocols.basic import LineReceiver
 from time import gmtime, strftime
-
+import json
+from multiprocessing import Process, Queue
 
 class ToasterFactory(Factory):
 
@@ -32,7 +33,8 @@ class Toaster(LineReceiver):
         self.lang = lang
         self.origin = None
         self.state = "GETORIGIN"
-        self.sendLineToLog(self.tr('toasting'))
+        self.sendLineToLog('Toaster Construction')
+        self.jobs = []
 
     def tr(self, stringx):
         """
@@ -40,7 +42,7 @@ class Toaster(LineReceiver):
         to satisfy Twisted's 'data must not not be unicode'
         """
         ss = self.lang.getTranslation(stringx)
-        return ss.encode('utf8')
+        return ss.encode('utf8')    # todo use config from toastCore
 
     def connectionMade(self):
         translatedNamePrompt = self.tr('namePrompt')
@@ -48,7 +50,7 @@ class Toaster(LineReceiver):
 
     def connectionLost(self, reason):
         if self.origin in self.connections:
-            self.sendLineToLog(' '.join([self.tr('conLost'), self.origin]))
+            self.sendLineToLog('Connection Lost ' + self.origin)
             del self.connections[self.origin]
             self.transport.abortConnection()
 
@@ -59,6 +61,7 @@ class Toaster(LineReceiver):
             if len(line):
                 requestList = line.split()
                 requestCommand = requestList[0]
+                # check and isolate command+params
                 if len(requestList) > 1:
                     requestParams = requestList[1:]
                 else:
@@ -66,7 +69,7 @@ class Toaster(LineReceiver):
 
                 self.handle_REQUEST(requestCommand, requestParams)
             else:
-                self.sendLineToClient('.')
+                self.sendLineToClient('-?-')
 
     def handle_GETORIGIN(self, origin):
         if origin in self.connections:
@@ -74,17 +77,26 @@ class Toaster(LineReceiver):
             return
         self.sendLineToClient(' '.join([self.tr('hello'), origin]))
         self.origin = origin
-        self.sendLineToLog(' '.join([self.tr('handshake'), origin]))
+        self.sendLineToLog('Handshake ' + origin)
         self.connections[origin] = self
         self.state = "REQUEST"
 
     def handle_REQUEST(self, reqCmd, reqParams):
-        feedback = "req: %s => %s " % (self.origin, reqCmd)
+        self.que = Queue()
+
+        feedback = "%s requested %s" % (self.origin, reqCmd)
+        # todo - how to deal with privacy/publicity ?
         self.sendLineToAll(feedback)
-        callResponse = self.pluginbase.call(reqCmd, reqParams)
+
+        #callResponse = self.pluginbase.call(reqCmd, reqParams)
+        p = Process(target = self.pluginbase.call, 
+            args = (self.que, reqCmd, reqParams))
+        p.start()
+        callResponse = self.que.get()
+        p.join()
+
         if callResponse is not None:
-            #print "Response code: %s" % (callResponse['status'], )
-            if callResponse['status'] == 999:
+            if callResponse['status'] == 999:   # 999 = quit code
                 self.terminateSelf()
             self.handle_pluginResponse(callResponse)
         else:
@@ -94,7 +106,7 @@ class Toaster(LineReceiver):
         self.sendLineToClient('**' + self.tr('goodbye') + '**')
         self.sendLineToAll(' '.join([self.origin, self.tr('disconnect')]))
         self.connectionLost(self.tr('userQuit'))
-        # how to cleanly disconnect and cleanup a client connection?
+        # TODO! how to cleanly disconnect and cleanup a client connection?
 
     def sendLineToAll(self, line, skipSelf=True):
         """
@@ -111,11 +123,13 @@ class Toaster(LineReceiver):
 
     def sendLineToClient(self, line):
         """
-        all logic for sending a string to a specific connections
+        all logic for sending a string to a specific connection
         """
+        if line is None:
+            line = '<sendLineToClient:line data None - not normal>'
         self.sendLine(line)
 
-    def sendLineToLog(send, line):
+    def sendLineToLog(self, line):
         """
         logic for sending a line to a logging system.
         this should be plugin-based to have a choice between console, db,
@@ -123,14 +137,29 @@ class Toaster(LineReceiver):
         For now, the default is to output everything to the server console
         """
         dt = strftime("%Y-%m-%d %H:%M:%S", gmtime())
-        print "%s : %s" % (dt, line)
+        print "%s | %s" % (dt, line)
 
-    def handle_pluginResponse(self, responseDict):
+    def handle_pluginResponse(self, responseDict, asJson=True): # TODO use toastCore config
         """
         Rethink:
-        Simple - plugins do work, and responds with results. all we ever get
+        Simple - most plugins do work, and responds with results. all we ever get
         back, is a result, nothing weird.
         """
-        print "PLUGIN RESPONSE: "
-        print responseDict
-        #self.sendLineToClient(responseValue) # send to client, until we know!
+
+        respTxt = 'pluginResponse Unhandled 000'
+        if responseDict['status'] is -1:
+            respTxt = self.tr('noSuchCommand')
+        else:
+            if responseDict['data'] is None:
+                respTxt = ''
+            else:
+                respTxt = responseDict['data']
+
+        if asJson is True:
+            exhaust = json.dumps(responseDict) 
+        else:
+            exhaust = str(responseDict['status']) + ' ' + respTxt
+
+        self.sendLineToClient(exhaust)
+        logLine = "Plugin response code %s sent to %s" % (responseDict['status'], self.origin)
+        self.sendLineToLog(logLine)

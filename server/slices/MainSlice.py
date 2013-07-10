@@ -1,5 +1,4 @@
 from datetime import datetime
-#import pprint
 
 
 class MainSlice(object):
@@ -7,25 +6,24 @@ class MainSlice(object):
     plugins = []
     pluginCommands = {}        # pluginClassName:command
 
-    def __init__(self):
-        pass
+    def __init__(self, configObject):
+        MainSlice.config = configObject
 
     def registerPlugin(self, sliceObject):
         """
         Registers a plugin by taking a reference to its instance.
         Builds a map of plugin names to commands
         """
-        #pp = pprint.PrettyPrinter(indent=4)
-        #pp.pprint(sliceObject.commandDict)
 
         if isinstance(sliceObject, MainSlice):
             pluginClassName = sliceObject.__class__.__name__
+            print '...loading slice', pluginClassName
             for command in sliceObject.commandDict:
                 MainSlice.pluginCommands.update({command: sliceObject})
 
             MainSlice.plugins.append(pluginClassName)
 
-    def call(self, commandName, commandParams=None):
+    def call(self, que, commandName, commandParams=None):
         """
         All commands entered are passed here. This function seeks for
         commandName in pluginCommands, and calls the mapped function
@@ -36,12 +34,16 @@ class MainSlice(object):
         returnValue = None
         for plugCmd, plugInstance in MainSlice.pluginCommands.items():
             if plugCmd == commandName:
-                returnValue = getattr(plugInstance, "command_" + plugCmd)()
+                try:
+                    returnValue = getattr(plugInstance, "command_" + plugCmd)()
+                except AttributeError:
+                    print "Valid command, but no definition for it was found in the plugin. ?!?"
+
                 invalidCommand = False
 
         if invalidCommand:
             returnValue = self.noCommandLikeThat(commandName)
-        return returnValue
+        que.put(returnValue)
 
     def noCommandLikeThat(self, bogusCommand):
         """

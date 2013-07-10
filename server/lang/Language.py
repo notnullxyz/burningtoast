@@ -25,7 +25,15 @@ class Language(object):
             'charset': self.conf.get('database', 'charset'),
         }
 
-        self.cnx = mysql.connector.connect(**dbconf)
+        try:
+            self.cnx = mysql.connector.connect(**dbconf)
+        except mysql.connector.Error as mErr:
+            if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+                print("Something is wrong with your user name or password")
+            elif err.errno == errorcode.ER_BAD_DB_ERROR:
+                print("Database does not exists")
+            else:
+                print(err)
 
     def getTranslation(self, name):
         """
