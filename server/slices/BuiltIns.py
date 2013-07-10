@@ -15,11 +15,15 @@ class BuiltIns(MainSlice):
         self.commandDict = {
             'help': 'Prints this help command.',
             'language': 'Shows what language is specified in config',
-            'quit': 'Disconnects and drops the current connection'
+            'quit': 'Disconnects and drops the current connection',
+ #           'who': """Shows a list of logged in usernames/id's""",
+ #           'date': 'Returns the current date in a full format',
+#            'msg': 'Message another user. msg <userid/name> <message>',
+#            'plugins': 'List all registered plugins.'
         }
+
         self.load()
         super(BuiltIns, self).registerPlugin(self)
-
 
     def load(self):
         """
@@ -28,6 +32,13 @@ class BuiltIns(MainSlice):
         commands = []
         for command in self.commandDict:
             commands.append(command)
+
+    def command_who(self):
+        """
+        BuiltIn who command. Shows who else is logged in.
+        """
+        pass
+
 
     def command_help(self):
         """
