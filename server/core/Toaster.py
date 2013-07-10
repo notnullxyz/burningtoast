@@ -90,7 +90,7 @@ class Toaster(LineReceiver):
 
         #callResponse = self.pluginbase.call(reqCmd, reqParams)
         p = Process(target = self.pluginbase.call, 
-            args = (reqCmd, reqParams, self.que))
+            args = (self.que, reqCmd, reqParams))
         p.start()
         callResponse = self.que.get()
         p.join()

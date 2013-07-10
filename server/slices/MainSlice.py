@@ -23,7 +23,7 @@ class MainSlice(object):
 
             MainSlice.plugins.append(pluginClassName)
 
-    def call(self, commandName, commandParams=None, que):
+    def call(self, que, commandName, commandParams=None):
         """
         All commands entered are passed here. This function seeks for
         commandName in pluginCommands, and calls the mapped function
