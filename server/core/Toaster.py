@@ -2,6 +2,7 @@ from twisted.internet.protocol import Factory
 from twisted.protocols.basic import LineReceiver
 from time import gmtime, strftime
 import json
+from multiprocessing import Process, Queue
 
 class ToasterFactory(Factory):
 
@@ -33,6 +34,7 @@ class Toaster(LineReceiver):
         self.origin = None
         self.state = "GETORIGIN"
         self.sendLineToLog('Toaster Construction')
+        self.jobs = []
 
     def tr(self, stringx):
         """
@@ -80,11 +82,19 @@ class Toaster(LineReceiver):
         self.state = "REQUEST"
 
     def handle_REQUEST(self, reqCmd, reqParams):
+        self.que = Queue()
+
         feedback = "%s requested %s" % (self.origin, reqCmd)
         # todo - how to deal with privacy/publicity ?
         self.sendLineToAll(feedback)
 
-        callResponse = self.pluginbase.call(reqCmd, reqParams)
+        #callResponse = self.pluginbase.call(reqCmd, reqParams)
+        p = Process(target = self.pluginbase.call, 
+            args = (self.que, reqCmd, reqParams))
+        p.start()
+        callResponse = self.que.get()
+        p.join()
+
         if callResponse is not None:
             if callResponse['status'] == 999:   # 999 = quit code
                 self.terminateSelf()
