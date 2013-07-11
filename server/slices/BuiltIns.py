@@ -37,11 +37,8 @@ class BuiltIns(MainSlice):
         """
         BuiltIn who command. Shows who else is logged in.
         """
-        f = MainSlice.getFromExternalDataMap(self, 'users')
-        print "= = = = = These seem to be the logged in users at this time = = = = = ="
-        print f
-        print "= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = "
-        return None
+        f = super(BuiltIns, self).getFromExternalDataMap('users')
+        return {'status': 0, 'data': {'numClients': len(f), 'clients': f}}
 
 
     def command_help(self):
