@@ -1,5 +1,5 @@
 from MainSlice import MainSlice
-
+import datetime
 
 class BuiltIns(MainSlice):
     """
@@ -60,6 +60,10 @@ class BuiltIns(MainSlice):
         """
         lang = MainSlice.config.get('general', 'language')
         return {'status': 0, 'data': lang}
+
+    def command_date(self):
+        dt = datetime.date.today().strftime('day %j of %Y, week %W, %A, %d%B, %H:%M:%S')
+        return {'status': 0, 'data': dt}
 
     def command_quit(self):
         """
