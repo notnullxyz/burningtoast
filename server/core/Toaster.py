@@ -90,21 +90,41 @@ class Toaster(LineReceiver):
         # todo - how to deal with privacy/publicity ?
         self.sendLineToAll(feedback)
 
-        #callResponse = self.pluginbase.call(reqCmd, reqParams)
-        p = Process(target = self.pluginbase.call, 
-            args = (self.que, reqCmd, reqParams))
+        p = Process(target = self.pluginbase.call, args = (self.que, reqCmd, reqParams))
         p.start()
         callResponse = self.que.get()
         p.join()
 
         if callResponse is not None:
-            if callResponse['status'] == 999:   # 999 = quit code
+            # special status handlers
+            if callResponse['status'] == 999:        # 999 = quit code
                 self.terminateSelf()
+            elif callResponse['status'] == 998:      # 998 = chat code
+                self.sendChatMessage(callResponse['data'])
             self.handle_pluginResponse(callResponse)
         else:
             pass
 
+    def sendChatMessage(self, chatData):
+        """
+        Handle chat messages to other users with special status code 998
+        """
+        destinationConnection = chatData['destClient']
+        messageLine = self.pluginbase.config.get('general', 'chatPrefix') + \
+            self.origin + ": " + chatData['message']
+        if destinationConnection.lower() == 'announce':
+            self.sendLineToAll(messageLine, False)
+        else:
+            if destinationConnection in self.connections:
+                self.sendLineToTarget(messageLine, chatData['destClient'])
+            else:
+                # TODO: handle invalid chat requests
+                pass
+
     def terminateSelf(self):
+        """
+        Handle disconnecting on the users whim with the special status 999
+        """
         self.sendLineToClient('**' + self.tr('goodbye') + '**')
         self.sendLineToAll(' '.join([self.origin, self.tr('disconnect')]))
         self.connectionLost(self.tr('userQuit'))
@@ -123,9 +143,16 @@ class Toaster(LineReceiver):
             else:
                 protocol.sendLine(line)
 
+    def sendLineToTarget(self, line, target):
+        """
+        send a line of text to a specified connection.
+        """
+        if target in self.connections:
+            self.connections[target].sendLine(line)
+
     def sendLineToClient(self, line):
         """
-        all logic for sending a string to a specific connection
+        all logic for sending a string to a self, current connection
         """
         if line is None:
             line = '<sendLineToClient:line data None - not normal>'
@@ -158,7 +185,7 @@ class Toaster(LineReceiver):
                 respTxt = responseDict['data']
 
         if asJson is True:
-            exhaust = json.dumps(responseDict) 
+            exhaust = json.dumps(responseDict)
         else:
             exhaust = str(responseDict['status']) + ' ' + respTxt
 

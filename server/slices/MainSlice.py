@@ -5,12 +5,12 @@ class MainSlice(object):
 
     plugins = []
     pluginCommands = {}
+    externalDataMap = {
+        'users': []
+    }
 
     def __init__(self, configObject):
         MainSlice.config = configObject
-        self.externalDataMap = {
-            'users': []
-        }
 
     def registerPlugin(self, sliceObject):
         """
@@ -39,7 +39,7 @@ class MainSlice(object):
             if plugCmd == commandName:
                 cc = "command_" + plugCmd
                 try:
-                    returnValue = getattr(plugInstance, cc)()
+                    returnValue = getattr(plugInstance, cc)(commandParams)
                 except AttributeError:
                     print "!!!!! Valid command, but no definition for it " \
                         "was found in the plugin: ", plugCmd
@@ -67,16 +67,16 @@ class MainSlice(object):
         """
         # pointOfOrigin will be used to control data storage at some point
         if action is 'logout':
-           if client in self.externalDataMap['users']:
-                self.externalDataMap['users'].remove(client)
+           if client in MainSlice.externalDataMap['users']:
+                MainSlice.externalDataMap['users'].remove(client)
         elif action is 'login':
-            if client not in self.externalDataMap['users']:
-                self.externalDataMap['users'].append(client)
+            if client not in MainSlice.externalDataMap['users']:
+                MainSlice.externalDataMap['users'].append(client)
 
     def getFromExternalDataMap(self, key):
         """
         Returns a key and it's value/s from the externalDataMap
         """
-        if key in self.externalDataMap:
-            return self.externalDataMap[key]
+        if key in MainSlice.externalDataMap:
+            return MainSlice.externalDataMap[key]
 
