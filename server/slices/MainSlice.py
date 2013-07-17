@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 class MainSlice(object):
 
     plugins = []
@@ -10,7 +11,7 @@ class MainSlice(object):
 
     def __init__(self, configObject):
         MainSlice.config = configObject
-    
+
     def registerPlugin(self, sliceObject):
         """
         Registers a plugin by taking a reference to its instance.
@@ -38,7 +39,7 @@ class MainSlice(object):
             if plugCmd == commandName:
                 cc = "command_" + plugCmd
                 try:
-                    returnValue = getattr(plugInstance, cc)()
+                    returnValue = getattr(plugInstance, cc)(commandParams)
                 except AttributeError:
                     print "!!!!! Valid command, but no definition for it " \
                         "was found in the plugin: ", plugCmd

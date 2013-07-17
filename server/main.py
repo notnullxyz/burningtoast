@@ -5,7 +5,6 @@ from core.common import infomsg, loadPlugins, loadConfig, fatality_iminent
 from lang.Language import Language
 
 
-
 if __name__ == "__main__":
     """
     port number could probably just be pulled from cmdline args
