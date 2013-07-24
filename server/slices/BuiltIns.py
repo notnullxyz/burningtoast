@@ -20,7 +20,7 @@ class BuiltIns(MainSlice):
             'who': "Shows a list of logged in clients",
             'date': 'Returns the current date in a full format',
             'msg': 'Message another user. msg <userid/name> <message>',
-#            'plugins': 'List all registered plugins.'
+            'plugins': 'List all registered plugins.'
         }
 
         self.load()
@@ -33,6 +33,19 @@ class BuiltIns(MainSlice):
         commands = []
         for command in self.commandDict:
             commands.append(command)
+
+    def command_plugins(self, params):
+        """
+        Built-in command for handling reporting loaded plugins to the caller
+        """
+        print "plugins loaded:"
+        print len(MainSlice.plugins)
+
+        pluginDataDict = {
+            'status': 0,
+            'data': MainSlice.plugins
+            }
+        return pluginDataDict
 
     def command_msg(self, params):
         """
