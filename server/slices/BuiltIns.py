@@ -1,6 +1,6 @@
 from MainSlice import MainSlice
 import datetime
-
+from core.license import copyright, gplv3Head 
 
 class BuiltIns(MainSlice):
     """
@@ -41,7 +41,11 @@ class BuiltIns(MainSlice):
         """
         # get this from a file somewhere... so we dont have to duplicate code
         # or hardcode stuff
-        print "TODO: call MainSlice.getLicenseInformation and handle this!"
+        licdict = {
+                'status': 0,
+                'data': copyright() + gplv3Head()
+                }
+        return licdict
 
     def command_plugins(self, params):
         """
