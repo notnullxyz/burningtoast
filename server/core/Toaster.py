@@ -77,6 +77,7 @@ class Toaster(LineReceiver):
             self.sendLineToClient(self.tr('usernameTaken'))
             return
         self.sendLineToClient(' '.join([self.tr('hello'), origin]))
+        # TODO - sendlinetoclient(get license information dict)
         self.origin = origin
         self.publishPublicData('login', origin)
         self.sendLineToLog('Handshake ' + origin)

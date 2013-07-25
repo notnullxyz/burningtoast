@@ -20,7 +20,8 @@ class BuiltIns(MainSlice):
             'who': "Shows a list of logged in clients",
             'date': 'Returns the current date in a full format',
             'msg': 'Message another user. msg <userid/name> <message>',
-            'plugins': 'List all registered plugins.'
+            'plugins': 'List all registered plugins.',
+            'license': 'Outputs information about the license of this project'
         }
 
         self.load()
@@ -33,6 +34,14 @@ class BuiltIns(MainSlice):
         commands = []
         for command in self.commandDict:
             commands.append(command)
+
+    def command_license(self, params):
+        """
+        Output license information, copyright notices and a link
+        """
+        # get this from a file somewhere... so we dont have to duplicate code
+        # or hardcode stuff
+        print "TODO: call MainSlice.getLicenseInformation and handle this!"
 
     def command_plugins(self, params):
         """
