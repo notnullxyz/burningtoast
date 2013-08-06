@@ -1,6 +1,6 @@
 from MainSlice import MainSlice
 import datetime
-from core.license import copyright, gplv3Head 
+from core.license import licenseNoticeStr
 
 class BuiltIns(MainSlice):
     """
@@ -43,7 +43,7 @@ class BuiltIns(MainSlice):
         # or hardcode stuff
         licdict = {
                 'status': 0,
-                'data': copyright() + gplv3Head()
+                'data': licenseNoticeStr()
                 }
         return licdict
 
