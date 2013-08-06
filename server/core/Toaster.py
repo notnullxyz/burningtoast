@@ -185,7 +185,10 @@ class Toaster(LineReceiver):
                 respTxt = responseDict['data']
 
         if asJson is True:
-            exhaust = json.dumps(responseDict)
+            try:    
+                exhaust = json.dumps(responseDict)
+            except UnicodeDecodeError:
+                exhaust = json.dumps({})
         else:
             exhaust = str(responseDict['status']) + ' ' + respTxt
 
