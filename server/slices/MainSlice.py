@@ -80,3 +80,13 @@ class MainSlice(object):
         if key in MainSlice.externalDataMap:
             return MainSlice.externalDataMap[key]
 
+    def getLicenseInformation(self):
+        """
+        Get the project's license information from a file and make it
+        available to any slices(plugins) that may want to use it.
+        """
+        # get it from a file (license file specified in config, yes?)
+        # sort it into a dictionary of copyright notice, link, info
+        # return to caller
+        print "TODO: getLicenseInformation()"
+
