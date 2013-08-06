@@ -673,8 +673,9 @@ the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 <http://www.gnu.org/philosophy/why-not-lgpl.html>."""
 
-licenseNotice = """BurningToast - A Plugin/Component driven server-side operating 'work horse'.
-    Copyright (C) 2013  Marlon van der Linde, see COPYING for license information"""
+licenseNotice = """BurningToast  Copyright (C) 2013 Marlon van der Linde
+    This program comes with ABSOLUTELY NO WARRANTY; 
+    for details see http://www.gnu.org/licenses/gpl.txt"""
 
 def copyright():
    return fullGPL
