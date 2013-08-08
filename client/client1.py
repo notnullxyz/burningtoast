@@ -1,3 +1,4 @@
+# not really a/the client, just some paste garbage to confirm upness (for now)
 import socket
 import sys
 
