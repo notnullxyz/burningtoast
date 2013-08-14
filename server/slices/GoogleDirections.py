@@ -17,15 +17,65 @@
 #    along with BurningToast.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
+# uses: The Google Directions API
+# https://developers.google.com/maps/documentation/directions/
+
 from MainSlice import MainSlice
+import urllib
 
 class GoogleDirections(MainSlice):
     """
     A google directions slice, with a simple origin/destination
-    based lookup and simplified responses
+    based lookup and simplified responses. Very lazy, sloppy slice
+    intended to demonstrate the ease of create a slice.
     """
 
-    def __init__(self):
-        pass
+    endpoint = "http://maps.googleapis.com/maps/api/directions/json?"
 
+    def __init__(self):
+        self.commandDict = {
+            'direx' : 'provide directions from Google Directions',
+            'direxhelp' : 'explains a bit about using direx'
+        }
+
+        self.load()
+        super(GoogleDirections, self).registerPlugin(self)
+
+    def load(self):
+        """Standard burningToast requirement method"""
+        commands = []
+        for command in self.commandDict:
+            commands.append(command)
+
+    def command_direx(self, params):
+        """
+        Calls the Google directions api, and gets things done.
+        Also, just realised the API spews out JSON, so no need
+        to massage it :-)
+
+        ---current params---
+        param 0: origin
+        param 1: destination
+
+        ---params for another version someday---
+        mode (driving, walking, bicycling)
+        units (metric, imperial)
+        avoid (tolls, highways)
+        """
+        uparms = {}
+        if len(params) < 2:
+            clRespond = super(GoogleDirections, self).needMoreParams(['origin','destination'])
+        else:
+            uparms['origin'] = params[0]
+            uparms['destination'] = params[1]
+            uparms['sensor'] = 'false'  # required, else "request denied"
+            response = urllib.urlopen(self.endpoint, urllib.urlencode(uparms))
+            clRespond = response.read()
+
+        print clRespond    # todo, massage into bT style response
+
+
+    def command_direxhelp(self, params):
+        """Some help and plugging Google for their API :-)"""
+        pass
 
