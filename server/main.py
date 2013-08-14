@@ -34,7 +34,7 @@ if __name__ == "__main__":
         fatality_iminent('no config file')
 
     infomsg()
-    loadPlugins()
+    loadPlugins(conf)
 
     lang = Language(conf)
 
