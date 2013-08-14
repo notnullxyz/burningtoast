@@ -45,6 +45,16 @@ class MainSlice(object):
 
             MainSlice.plugins.append(pluginClassName)
 
+    def needMoreParams(self, listOfParams):
+        print "WOA!"
+        stringOfParams = ' '.join(listOfParams)
+        paramDict = {
+            'status': -1,
+            'data': 'not enough params. Need ' + stringOfParams
+        }
+        return paramDict
+
+
     def call(self, que, commandName, commandParams=None):
         """
         All commands entered are passed here. This function seeks for
