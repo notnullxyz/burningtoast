@@ -17,38 +17,34 @@
 #    along with BurningToast.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-from slices.BuiltIns import BuiltIns
-from slices.GoogleDirections import GoogleDirections
 import ConfigParser
 from sys import exit
 
 cfname = 'mains.cfg'
 cfg = None
 version = 0.111
-appName = "BurningToast %s" % (version,)
-
+appName = "BurningToast"
 
 
 def infomsg():
-    print "Starting up %s" % (appName,)
+    print "Starting up %s %s" % (appName, version)
 
 
 def loadPlugins(conf):
     """
-    instantiate plugin classes. They should all extend MainSlice.
+    instantiate plugin classes based on the config file loadlist.
+    They should all extend MainSlice.
     On creation, they will run their load() methods, inserting
     them into the static plugin registry. The instances created
     here will go out of scope with this function, perfect?
     """
     pluginsToLoad = conf.get('plugins', 'loadlist')
     pluginList = pluginsToLoad.split(',')
-    plugins = map(__import__, pluginList)
 
-    #perhaps
-    #for each in config file section of plugin part classnames:
-    #     a = reflectTheStringClassName()
-    #a = BuiltIns()
-    #b = GoogleDirections()
+    for plugin in pluginList:
+        modname = 'slices.' + plugin
+        mod = __import__(modname, {}, {}, plugin)
+        obj = getattr(mod, plugin)()
 
 
 def configFileExists():
