@@ -1,4 +1,6 @@
 # Codename burningToast
+
+Currently at version: 0.2
   
 Plugin/Component driven server-side operating 'work horse'.  
 ---

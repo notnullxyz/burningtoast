@@ -22,7 +22,7 @@ from sys import exit
 
 cfname = 'mains.cfg'
 cfg = None
-version = 0.111
+version = 0.2
 appName = "BurningToast"
 
 
