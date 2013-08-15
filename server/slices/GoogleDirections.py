@@ -22,6 +22,7 @@
 
 from MainSlice import MainSlice
 import urllib
+import json
 
 class GoogleDirections(MainSlice):
     """
@@ -35,7 +36,6 @@ class GoogleDirections(MainSlice):
     def __init__(self):
         self.commandDict = {
             'direx' : 'provide directions from Google Directions',
-            'direxhelp' : 'explains a bit about using direx'
         }
 
         self.load()
@@ -50,8 +50,7 @@ class GoogleDirections(MainSlice):
     def command_direx(self, params):
         """
         Calls the Google directions api, and gets things done.
-        Also, just realised the API spews out JSON, so no need
-        to massage it :-)
+        This is a very crude slice command. Simple and demonstrational
 
         ---current params---
         param 0: origin
@@ -63,19 +62,28 @@ class GoogleDirections(MainSlice):
         avoid (tolls, highways)
         """
         uparms = {}
+        okStatus = "ok"
         if len(params) < 2:
             clRespond = super(GoogleDirections, self).needMoreParams(['origin','destination'])
         else:
             uparms['origin'] = params[0]
             uparms['destination'] = params[1]
             uparms['sensor'] = 'false'  # required, else "request denied"
-            response = urllib.urlopen(self.endpoint, urllib.urlencode(uparms))
+            full = self.endpoint + urllib.urlencode(uparms)
+            response = urllib.urlopen(full) 
             clRespond = response.read()
 
-        print clRespond    # todo, massage into bT style response
+        dats = json.loads(clRespond)
+        stat = dats['status'].lower()
+        if stat == okStatus.lower():
+            status = 0
+            data = self.sanitise(dats)
+        else:
+            status = -1
+            data = stat
 
+        return {'status': status, 'data': data}
 
-    def command_direxhelp(self, params):
-        """Some help and plugging Google for their API :-)"""
-        pass
-
+    def sanitise(self, data):
+        # todo - clean up/condense the json data
+        return data
