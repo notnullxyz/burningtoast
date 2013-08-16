@@ -44,7 +44,9 @@ def loadPlugins(conf):
     for plugin in pluginList:
         modname = 'slices.' + plugin
         mod = __import__(modname, {}, {}, plugin)
-        obj = getattr(mod, plugin)()
+        # less-simple slices (package) need this:
+        ppp = plugin.split('.')[-1]
+        obj = getattr(mod, ppp)()
 
 
 def configFileExists():
