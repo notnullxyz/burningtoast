@@ -45,7 +45,7 @@ class Missy(MainSlice):
         """
         Moan, MIssy, Moan
         """
-        missytest = MissyTest()
+        missytest = MissyTest.MissyTest()
         missysaid = missytest.moan()
         return {'status': 0, 'data': missysaid}
 
