@@ -16,15 +16,17 @@ class MissyCore(object):
         pass
 
     def moan(self):
-        print "I am Missy, and I am alive."
+        return "I am Missy, and I am alive."
 
     def worldify(self):
         # instantiate all classes and stuff
+        pass
 
     def persist_world(self, id):
         """
         persist world data as it exists at the time, by id/name
         """
+        pass
 
     def land_create(self, id, sizeX, sizeY):
         """

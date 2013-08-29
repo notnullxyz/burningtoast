@@ -18,7 +18,7 @@
 ##
 
 from slices.MainSlice import MainSlice
-import MissyTest
+import MissyCore
 
 class Missy(MainSlice):
     """
@@ -45,7 +45,6 @@ class Missy(MainSlice):
         """
         Moan, MIssy, Moan
         """
-        missytest = MissyTest.MissyTest()
-        missysaid = missytest.moan()
-        return {'status': 0, 'data': missysaid}
+        missytest = MissyCore.MissyCore()
+        return {'status': 0, 'data': missytest.moan()}
 
