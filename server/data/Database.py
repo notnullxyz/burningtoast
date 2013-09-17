@@ -1,5 +1,5 @@
 ##
-#    Copyright 2013 Alexia Pouyaud
+#    Copyright 2013 Marlon B van der Linde
 #
 #    This file is part of BurningToast
 #
