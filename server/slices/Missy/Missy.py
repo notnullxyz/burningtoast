@@ -35,7 +35,6 @@ class Missy(MainSlice):
         self.createCore()
 
     def createCore(self):
-        print "Creating a Single MissyCore instance"
         self.mc = MissyCore.MissyCore()
 
     def load(self):
@@ -52,6 +51,5 @@ class Missy(MainSlice):
         """
         Moan, MIssy, Moan
         """
-        print params
-        return {'status': 0, 'data': self.mc.moan()}
+        return {'status': 0, 'data': self.mc.moan(params)}
 

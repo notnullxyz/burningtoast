@@ -86,7 +86,7 @@ class BuiltIns(MainSlice):
         This simply returns the message and a special handle code to Toaster.
         """
         if len(params) < 2:
-            return super(GoogleDirections, self).needMoreParams(['destination client', 'message'])
+            return super(BuiltIns, self).needMoreParams(['destination client', 'message'])
         else:
             msgFull = ' '.join(params[1::1])
             chatDict = {

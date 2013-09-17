@@ -26,32 +26,29 @@ class MissyCore(object):
         # self.worldify() ??
         pass
 
-    def moan(self):
-        return "I am Missy, and I am alive."
+    def moan(self, params):
+        moaning = "I am Missy, and I am alive."
+        if params is not None:
+            return moaning + ' '.join([word.upper() for word in params])
+        return moaning
 
-    def worldify(self):
-        # instantiate all classes and stuff
+    def setup_data(self):
+        # instantiate all classes and data provider
         pass
 
-    def persist_world(self, id):
+    def create_brick(self, id):
         """
         persist world data as it exists at the time, by id/name
         """
         pass
 
-    def land_create(self, id, sizeX, sizeY):
-        """
-        Create a piece of land, with size X/Y
-        """
-        pass
-
-    def land_destroy(self, id):
+    def delete_brick(self, id):
         """
         Destroy a piece of land, by ID
         """
         pass
 
-    def land_info(self, id):
+    def material_info(self, id):
         """
         Return data on a piece of land, if it exists
         """
