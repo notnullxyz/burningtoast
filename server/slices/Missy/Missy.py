@@ -32,6 +32,11 @@ class Missy(MainSlice):
 
         self.load()
         super(Missy, self).registerPlugin(self)
+        self.createCore()
+
+    def createCore(self):
+        print "Creating a Single MissyCore instance"
+        self.mc = MissyCore.MissyCore()
 
     def load(self):
         """
@@ -41,10 +46,12 @@ class Missy(MainSlice):
         for command in self.commandDict:
             commands.append(command)
 
+    # from here onwards, wrap MissyCore functionality into command calls
+
     def command_moan(self, params):
         """
         Moan, MIssy, Moan
         """
-        missytest = MissyCore.MissyCore()
-        return {'status': 0, 'data': missytest.moan()}
+        print params
+        return {'status': 0, 'data': self.mc.moan()}
 
