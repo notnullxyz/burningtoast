@@ -26,18 +26,13 @@ from lang.Language import Language
 
 if __name__ == "__main__":
     """
-    port number could probably just be pulled from cmdline args
-        version and name should go into a conf file of sorts
+        Fire this up for a crispy snack
     """
-    conf = loadConfig()
-    if conf is None:
-        fatality_iminent('no config file')
-
+    conf = loadConfig(fatality_iminent)
     infomsg()
     loadPlugins(conf)
-
-    lang = Language(conf)
-
+    lang = Language(conf, fatality_iminent)
+ 
     default_port = conf.getint('server', 'port')
 
     # ------- this comment will be gone some day -----------------------
@@ -49,9 +44,7 @@ if __name__ == "__main__":
     # MainSlice.plugins['pluginname'].function sort of thing...
     # ------------------------------------------------------------------
     plugbase = MainSlice(conf)
-
     reactor.listenTCP(default_port, ToasterFactory(reactor, plugbase, lang))
     listenMsg = lang.getTranslation('sysListenPort')
     print "%s %d" % (listenMsg, default_port)
-
     reactor.run()
