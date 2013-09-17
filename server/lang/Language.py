@@ -35,6 +35,7 @@ class Language(object):
         """
         Establishes connection to dbLang.
         """
+        # TODO - deprecate and call Database()
         dbconf = {
             'user': self.conf.get('database', 'username'),
             'password': self.conf.get('database', 'password'),
