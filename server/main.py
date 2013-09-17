@@ -22,13 +22,15 @@ from twisted.internet import reactor
 from slices.MainSlice import MainSlice
 from core.common import infomsg, loadPlugins, loadConfig, fatality_iminent
 from lang.Language import Language
-
+from data.Database import Database
 
 if __name__ == "__main__":
     """
         Fire this up for a crispy snack
     """
     conf = loadConfig(fatality_iminent)
+    db = Database(conf, fatality_iminent).determine_driver()
+    print "%s %s" % ('Database loaded:', db)
     infomsg()
     loadPlugins(conf)
     lang = Language(conf, fatality_iminent)
