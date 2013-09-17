@@ -20,7 +20,6 @@
 import mysql.connector
 from core.common import loadConfig
 
-
 class Language(object):
     """
     Languages opens a connection to the lang database and handles
@@ -28,8 +27,9 @@ class Language(object):
     Language then severs the connection.
     Alexia Pouyaud
     """
-    def __init__(self, conf):
+    def __init__(self, conf, errorCallback):
         self.conf = conf
+        self.errCallback = errorCallback
 
     def connectToDbLang(self):
         """
@@ -46,13 +46,8 @@ class Language(object):
 
         try:
             self.cnx = mysql.connector.connect(**dbconf)
-        except mysql.connector.Error as mErr:
-            if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-                print("Something is wrong with your user name or password")
-            elif err.errno == errorcode.ER_BAD_DB_ERROR:
-                print("Database does not exists")
-            else:
-                print(err)
+        except mysql.connector.Error as err:
+            self.errCallback('Cannot connect to database: %s' % (err, ))
 
     def getTranslation(self, name):
         """

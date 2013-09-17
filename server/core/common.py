@@ -55,7 +55,7 @@ def configFileExists():
         return False
 
 
-def loadConfig():
+def loadConfig(errCallback):
     """loadConfig should happen very early, even before loadPlugins"""
     if configFileExists():
         cfg = ConfigParser.RawConfigParser()
@@ -63,8 +63,8 @@ def loadConfig():
         print "Loaded configuration File: %s" % (cfname, )
         return cfg
     else:
-        print "Could not load configuration, you need a %s file" % (cfname, )
-        return None
+        errorMsg = "Could not load configuration, you need a %s file" % (cfname, )
+        errCallback(errorMsg)
 
 
 def fatality_iminent(why):
