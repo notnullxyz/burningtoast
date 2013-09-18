@@ -68,6 +68,7 @@ def loadConfig(errCallback):
 
 
 def fatality_iminent(why):
-    print "Something is wrong, and we can't really go on like this"
-    print "====== %s ======" % (why, )
+    print "Something Unsavoury Just Happened..."
+    print "%s" % (why, )
+    print "... exiting"
     exit()
