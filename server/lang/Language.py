@@ -62,7 +62,7 @@ class Language(object):
         >>> getTranslations('goodbye')
         >>> Aurevoir
         """
-
+        no_strings_attached = '<UNTRANSLATED STRING>'
         user_language = self.conf.get("general", "language")
 
         self.connectToDbLang()
@@ -73,6 +73,8 @@ class Language(object):
             + """ FROM tblLang WHERE MsgName = %s""")
         cursor.execute(query, (name, ))
         val = cursor.fetchone()
+        if val is None:
+            return no_strings_attached
         cursor.close()
         self.cnx.close()
         # For xlation, only need a unicode object back, not the whole tuple
