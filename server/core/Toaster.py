@@ -105,7 +105,7 @@ class Toaster(LineReceiver):
     def handle_REQUEST(self, reqCmd, reqParams):
         self.que = Queue()
 
-        feedback = "%s requested %s" % (self.origin, reqCmd)
+        feedback = "%s Req: %s" % (self.origin, reqCmd)
         # todo - how to deal with privacy/publicity ?
         self.sendLineToAll(feedback)
 
@@ -185,7 +185,7 @@ class Toaster(LineReceiver):
         For now, the default is to output everything to the server console
         """
         dt = strftime("%Y-%m-%d %H:%M:%S", gmtime())
-        print "%s | %s" % (dt, line)
+        print "> %s :: %s" % (dt, line)
 
     def handle_pluginResponse(self, responseDict, asJson=True): # TODO use toastCore config
         """
@@ -204,7 +204,7 @@ class Toaster(LineReceiver):
                 respTxt = responseDict['data']
 
         if asJson is True:
-            try:    
+            try:
                 exhaust = json.dumps(responseDict)
             except UnicodeDecodeError:
                 exhaust = json.dumps({})
@@ -212,7 +212,7 @@ class Toaster(LineReceiver):
             exhaust = str(responseDict['status']) + ' ' + respTxt
 
         self.sendLineToClient(exhaust)
-        logLine = "Plugin response code %s sent to %s" % (responseDict['status'], self.origin)
+        logLine = "Slice Response Code %s sent to client: %s" % (responseDict['status'], self.origin)
         self.sendLineToLog(logLine)
 
     def publishPublicData(self, action, client):
